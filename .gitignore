@@ -1,0 +1,9 @@
+# Ignore everything in .cursor
+*
+!.my.gitignore
+!.gitignore
+!agents/
+!agents/**
+!skills/
+!skills/**
+!README.md
