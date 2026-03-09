@@ -1,11 +1,11 @@
 ---
-name: figma-objetivos-criterios
+name: levanta-criterios-local
 description: Fetches a Figma screen via MCP and produces Objectives and Acceptance criteria per functionality. Use when the user provides a Figma design link and asks to "levantar objetivo e critérios de aceite", "objetivos e critérios por tela", or similar, with a list of functionalities.
 ---
 
 # Objetivos e Critérios de Aceite a partir do Figma
 
-Gera **objetivo** (ao menos 1) e **critérios de aceite** (máximo 5) por funcionalidade, usando o design do Figma como referência.
+Gera **objetivo** (ao menos 1) e **critérios de aceite** (máximo 10) por funcionalidade, usando o design do Figma como referência.
 
 ## Fluxo
 
@@ -31,6 +31,11 @@ Gera **objetivo** (ao menos 1) e **critérios de aceite** (máximo 5) por funcio
    - Preferir critérios no formato Dado/Quando/Então quando fizer sentido.
    - Sem introduções longas; direto ao ponto.
 
+5. **Levantamento dos criterios**
+   - Para levantar os creterios seja bem criterioso em relação valores presentes na tela, por exemplo em tabelas analisa bem as colunas e deixe bem claro quais as colunas presente;
+   - Em caso de enuns como status, deixe claro TODOS os status presentes na tela;
+   - Descreva por exemplo corretamente qual é a ordem das coisas, por exemplo em uma linha de uma tabela se existe um botão ao lado de um texto, descreva isso bem "Ao lado do nome do usuario existe um botão de tres pontos para abrir um menu";
+
 ## Regras
 
 | Regra | Valor |
@@ -46,7 +51,7 @@ Gera **objetivo** (ao menos 1) e **critérios de aceite** (máximo 5) por funcio
 /requison Eu quero que voce use o MCP do Cursor para pegar essa tela aqui: [LINK DO FIGMA]
 E levantar Objetivo e critérios de aceite
 Quero pelo menos 1 objetivo para cada funcionalidade
-e no maximo 5 criterios para cada funcionalidade
+e no minimo 5 criterios e no maximo 10 para cada funcionalidade
 nesse link tem as seguintes funcionalidades
 
 - Listagem de chaves com tela de quando não tem nenhuma cadastrada
