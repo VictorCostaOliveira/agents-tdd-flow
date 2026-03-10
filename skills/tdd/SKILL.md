@@ -1,5 +1,5 @@
 ---
-name: figma-criterios-tdd
+name: tdd
 description: Implementa uma funcionalidade a partir de um link do Figma e critérios de aceite: levanta specs visuais via Figma MCP, depois cria testes (testivos) e implementa em TDD (devoso). Use quando o usuário tiver um link do Figma, objetivo/critérios de aceite e quiser testes primeiro e implementação em seguida.
 ---
 
@@ -53,6 +53,10 @@ Implementa uma **funcionalidade** (qualquer tela ou bloco de UI) a partir de um 
   - Estrutura de componentes (passo 2) e spec de layout (passo 1).
   - Que os **testes já foram criados** pelo testivos e que a implementação deve fazer **todos os testes passarem**, **sem alterar os testes**.
 - Instruir: implementar em TDD; seguir padrões do app (Composition API, `useI18n`, tipos em `types/`, componentes `@acme/ui`, Tailwind com tokens).
+
+### 4. Após implmentação (avaliason)
+
+- Chamar o **subagente avaliason** para analisar as changes feitas e levantar melhorias e devolver para o devoso para ele implementar as changes.
 
 ## Regras rápidas
 
