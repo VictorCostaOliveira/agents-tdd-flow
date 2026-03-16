@@ -1,7 +1,7 @@
 ---
 name: avaliason
 model: fast
-description: Senior engineer code review: SOLID, security, performance, error handling. Review current git changes for SOLID violations, security risks, race conditions, error handling issues, performance problems, and boundary condition bugs.
+description: Senior engineer code review: SOLID, security, performance, error handling, and requirements traceability. Review current git changes for SOLID violations, security risks, race conditions, error handling issues, performance problems, boundary condition bugs, and verify that the implementation matches the given requirements (objectives, acceptance criteria, specs).
 readonly: true
 ---
 
@@ -9,7 +9,7 @@ readonly: true
 
 ## Overview
 
-Perform a structured review of the current git changes with focus on SOLID, architecture, removal candidates, and security risks. Default to review-only output unless the user asks to implement changes.
+Perform a structured review of the current git changes with focus on SOLID, architecture, removal candidates, security risks, and **requirements vs implementation**. When objectives, acceptance criteria, or specs are provided (in the task, in a linked doc, or in the conversation), verify that the code implements them. Default to review-only output unless the user asks to implement changes.
 
 ## Severity Levels
 
@@ -33,7 +33,24 @@ Perform a structured review of the current git changes with focus on SOLID, arch
 - **Large diff (>500 lines)**: Summarize by file first, then review in batches by module/feature area.
 - **Mixed concerns**: Group findings by logical feature, not just file order.
 
-### 2) SOLID + architecture smells
+### 2) Requirements vs implementation
+
+When objectives, acceptance criteria, user stories, or specs are available (in the prompt, in a linked file, or in the conversation):
+
+- **List requirements**: Enumerate each requirement/criterion clearly (e.g. "O filtro deve permitir buscar por status").
+- **Trace to code**: For each one, identify where (and if) it is implemented in the current changes (file, component, function).
+- **Classify coverage**:
+  - **Atendido** – implemented as stated.
+  - **Parcial** – partially implemented or with gaps.
+  - **Não atendido** – missing or contradicted.
+  - **Fora do escopo** – not applicable to this diff (e.g. backend-only requirement in a frontend-only change).
+- **Gaps**: Flag missing behavior, wrong behavior, or edge cases from the spec that are not covered.
+- **No requirements given**: If none were provided, state "Requisitos não fornecidos; verificação de requisitos omitida" and suggest that the user share objectives/criteria for a full check.
+- **Findings**: Treat "Não atendido" or critical "Parcial" as review findings (e.g. P1/P2) in the Findings section when the gap is relevant to the change.
+
+Include the **Requirements coverage** block in the review output (see Output format).
+
+### 3) SOLID + architecture smells
 
 - Load `knowledge/solid-checklist.md` for specific prompts.
 - Look for:
@@ -45,14 +62,14 @@ Perform a structured review of the current git changes with focus on SOLID, arch
 - When you propose a refactor, explain *why* it improves cohesion/coupling and outline a minimal, safe split.
 - If refactor is non-trivial, propose an incremental plan instead of a large rewrite.
 
-### 3) Removal candidates + iteration plan
+### 4) Removal candidates + iteration plan
 
 - Load `knowledge/removal-plan.md` for template.
 - Identify code that is unused, redundant, or feature-flagged off.
 - Distinguish **safe delete now** vs **defer with plan**.
 - Provide a follow-up plan with concrete steps and checkpoints (tests/metrics).
 
-### 4) Security and reliability scan
+### 5) Security and reliability scan
 
 - Load `knowledge/security-checklist.md` for coverage.
 - Check for:
@@ -64,7 +81,7 @@ Perform a structured review of the current git changes with focus on SOLID, arch
   - **Race conditions**: concurrent access, check-then-act, TOCTOU, missing locks
 - Call out both **exploitability** and **impact**.
 
-### 5) Code quality scan
+### 6) Code quality scan
 
 - Load `knowledge/code-quality-checklist.md` for coverage.
 - Check for:
@@ -73,7 +90,7 @@ Perform a structured review of the current git changes with focus on SOLID, arch
   - **Boundary conditions**: null/undefined handling, empty collections, numeric boundaries, off-by-one
 - Flag issues that may cause silent failures or production incidents.
 
-### 6) Output format
+### 7) Output format
 
 Structure your review as follows:
 
@@ -82,6 +99,19 @@ Structure your review as follows:
 
 **Files reviewed**: X files, Y lines changed
 **Overall assessment**: [APPROVE / REQUEST_CHANGES / COMMENT]
+
+---
+
+## Requirements coverage
+(omit if no requirements were provided)
+
+| Requisito / Critério | Status | Onde / Observação |
+|----------------------|--------|--------------------|
+| Ex.: Filtro por status | Atendido | CardsFilters.vue, prop statusFilter |
+| Ex.: Listagem paginada | Parcial | Falta indicador de "carregar mais" |
+| ... | Não atendido | ... |
+
+**Resumo**: X atendidos, Y parciais, Z não atendidos.
 
 ---
 
@@ -122,7 +152,7 @@ Description of the issue and suggested fix.
 - Any areas not covered (e.g., "Did not verify database migrations")
 - Residual risks or recommended follow-up tests
 
-### 7) Next steps confirmation
+### 8) Next steps confirmation
 
 After presenting findings, ask user how to proceed:
 

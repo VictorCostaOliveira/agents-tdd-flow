@@ -15,48 +15,45 @@ Implementa uma **funcionalidade** (qualquer tela ou bloco de UI) a partir de um 
 
 ## Fluxo em 4 etapas
 
-### 1. Levantar specs do Figma (layout)
+### 1. Levantar specs do Figma e definir estrutura de componentes (figoso)
 
-- Extrair da URL: `fileKey` (path do design) e `nodeId` (parâmetro `node-id` com hífen → dois-pontos, ex. `1234-5678` → `1234:5678`).
-- Chamar **Figma MCP** (`plugin-figma-figma`):
-  - `get_design_context` com `fileKey`, `nodeId` e opcionalmente `clientLanguages: "typescript"`, `clientFrameworks: "vue"`.
-  - `get_screenshot` para referência visual.
-- Produzir um **arquivo de spec de layout** na pasta da feature (ex.: `LAYOUT_SPEC.md`) com:
-  - **Cores**: mapear para tokens Tailwind do projeto (ver skill `figma-design-system` e preset `@acme/ui`).
-  - **Tipografia**: tamanhos de fonte, line-height, peso (ex.: `text-sm`, `text-xs`).
-  - **Espaçamentos**: padding, margin, alturas de linhas/blocos.
-  - **Componentes visuais**: botões, inputs, badges, tabelas, etc., conforme o design.
-- Manter o spec conciso; referenciar o link do Figma no topo.
+- Invocar o **agente figoso** (ver `.cursor/agents/figoso.md`): ele é especialista em analisar Figma via MCP e produzir LAYOUT_SPEC.md + estrutura de componentes.
+- Entregar como input: **link do Figma** (e, se houver, pasta/contexto da feature onde o spec deve ser salvo).
+- O figoso:
+  - Extrai da URL `fileKey` e `nodeId`; chama Figma MCP (`get_design_context`, `get_screenshot`) com `clientLanguages: "typescript"`, `clientFrameworks: "vue"`.
+  - Produz **LAYOUT_SPEC.md** na pasta da feature (cores → tokens Tailwind, tipografia, espaçamentos, componentes visuais; ver skill `figma-design-system`).
+  - Define **estrutura de componentes**: página/rota, componentes novos, pastas (seguindo `folder-structure` e `vue-components`), responsabilidade de cada um.
+- Resultado desta etapa: **LAYOUT_SPEC.md** + documentação da estrutura de componentes (no próprio spec ou em bloco dedicado). Usar esse resultado como contexto nas etapas 2 e 3.
 
-### 2. Definir estrutura de componentes
-
-- Analisar o design e o **contexto onde a feature será inserida** (página existente, rota, módulo).
-- Decidir **quais componentes criar** e onde vivem (views, components por domínio), seguindo `folder-structure` e `vue-components`.
-- Se houver padrão similar no projeto (ex.: outra listagem, outro formulário), reutilizar a mesma estrutura de pastas e nomes.
-- Documentar brevemente: página/rota que usa a feature, componentes novos e responsabilidade de cada um (sem forçar um único padrão como "só listagem").
-
-### 3. Criar testes (testivos)
+### 2. Criar testes (testivos)
 
 - Chamar o **subagente testivos** (`mcp_task` com `subagent_type: "testivos"`).
 - Entregar como contexto:
   - **Objetivo** e **critérios de aceite** (input do usuário).
-  - Onde a feature fica (página, rotas) e **quais componentes** foram definidos no passo 2.
-  - O **arquivo de spec de layout** (ou resumo) para alinhar expectativas visuais.
+  - Resultado do **passo 1 (figoso)**: onde a feature fica (página, rotas), **quais componentes** foram definidos e o **LAYOUT_SPEC.md** (ou resumo) para alinhar expectativas visuais.
 - Instruir: criar testes (Vitest + @vue/test-utils) que validem os critérios de aceite; seguir convenções do projeto (describe/context/it, helpers de mount do app).
 - **Não** alterar testes existentes; apenas criar novos.
 
-### 4. Implementar conforme testes (devoso)
+### 3. Implementar conforme testes (devoso)
 
 - Chamar o **subagente devoso** (`mcp_task` com `subagent_type: "devoso"`).
 - Entregar como contexto:
   - Objetivo e critérios de aceite.
-  - Estrutura de componentes (passo 2) e spec de layout (passo 1).
+  - Resultado do **passo 1 (figoso)**: estrutura de componentes e LAYOUT_SPEC.md.
   - Que os **testes já foram criados** pelo testivos e que a implementação deve fazer **todos os testes passarem**, **sem alterar os testes**.
 - Instruir: implementar em TDD; seguir padrões do app (Composition API, `useI18n`, tipos em `types/`, componentes `@acme/ui`, Tailwind com tokens).
 
-### 4. Após implmentação (avaliason)
+### 4. Após implementação (avaliason)
 
 - Chamar o **subagente avaliason** para analisar as changes feitas e levantar melhorias e devolver para o devoso para ele implementar as changes.
+
+### IMPORTANTE
+- todos os subagentes DEVEM ser chamados. Se algum agente tiver problema para ser invocado, voce deve tentar novamente. Nao quero que voce execute as tarefas sem ser com o agente quando essa skill for invocada.
+- **Passo 1:** chamar o figoso com o link do Figma para obter LAYOUT_SPEC.md e estrutura de componentes.
+- **Passo 2:** chamar o subagente testivos para gerar os testes (com base em objetivo, critérios de aceite e resultado do figoso).
+- **Passo 3:** chamar o devoso para implementar em TDD: fazer um teste passar (sem alterar o teste), depois o próximo cenário, e assim sucessivamente.
+- **Passo 4:** após terminar a implementação, chamar o avaliason para avaliar o código e o devoso para corrigir os TODOS pontos levantados.
+- Seguir o flow do TDD: teste → faz o teste passar → avalia e refatora → próximo cenário.
 
 ## Regras rápidas
 
@@ -70,5 +67,6 @@ Implementa uma **funcionalidade** (qualquer tela ou bloco de UI) a partir de um 
 
 ## Referências
 
+- Agente: **figoso** (levantar specs do Figma e estrutura de componentes via MCP).
 - Skills: `figma-design-system`, `figma-objetivos-criterios`, `testing`, `vue-components`, `folder-structure`, `ui-library`
 - Exemplo de spec de layout no repo: `apps/web/src/components/orders/OrderList/LAYOUT_SPEC.md`
