@@ -24,6 +24,7 @@ Implementa uma **funcionalidade** (qualquer tela ou bloco de UI) a partir de um 
   - Produz **LAYOUT_SPEC.md** na pasta da feature (cores → tokens Tailwind, tipografia, espaçamentos, componentes visuais; ver skill `figma-design-system`).
   - Define **estrutura de componentes**: página/rota, componentes novos, pastas (seguindo `folder-structure` e `vue-components`), responsabilidade de cada um.
 - Resultado desta etapa: **LAYOUT_SPEC.md** + documentação da estrutura de componentes (no próprio spec ou em bloco dedicado). Usar esse resultado como contexto nas etapas 2 e 3.
+- Não invente assets, tente baixar os assets presentes na tela com o MCP do figma para usar os assets de corretos.
 
 ### 2. Criar testes (testivos)
 
