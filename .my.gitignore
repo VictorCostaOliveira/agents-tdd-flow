@@ -1,7 +1,0 @@
-# Ignore everything in .cursor
-*
-!agents/
-!agents/**
-!skills/
-!skills/**
-!README.md
