@@ -1,11 +1,7 @@
-# Ignore everything in .cursor
+# Rastrear apenas o bundle versionado (raiz + cursor/ + claude/)
 *
-!agents/
-!rules/
-!rules/**
-!commands/
-!commands/**
-!agents/**
-!skills/
-!skills/**
 !README.md
+!cursor/
+!cursor/**
+!claude/
+!claude/**

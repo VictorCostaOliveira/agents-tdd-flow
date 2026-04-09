@@ -1,0 +1,15 @@
+# Geral
+
+- Em **projeto existente**, **antes** de escrever código: inspecionar o **contexto da alteração** (pastas, estilo, abstrações, naming) e **alinhar** com o que já existe; só depois implementar ou refatorar.
+- **Métodos pequenos**: no máximo ~**15 linhas** por método quando praticável; dividir responsabilidades; manter **DRY** sem over-engineering.
+
+# Testes
+
+- **Nunca** alterar, apagar ou comentar **testes existentes** salvo **pedido explícito** do utilizador para essa alteração.
+
+# Rails
+
+- **Migrations**: antes de criar ou correr, **perguntar** ao utilizador **como** devem ser (colunas, tipos, índices, nomes).
+- **Sempre** usar **`rails generate migration`** (ou generator adequado) para gerar ficheiros de migration — **não** inventar à mão se o projeto usa convenção Rails.
+- **Nunca** executar **`rails db:migrate`** (ou equivalente) **sem** o utilizador pedir.
+- **Nunca** criar migrations de **rollback** dedicadas **sem** pedido explícito.
