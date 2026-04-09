@@ -1,0 +1,14 @@
+---
+description: Evitar READMEs e .md desnecessários; documentação só quando precisa, sucinta e em poucos arquivos.
+alwaysApply: true
+---
+
+# Documentação — mínimo necessário
+
+- **Não** criar documentação estilo **README** genérico nem proliferar arquivos **`.md`** “por hábito” ou para cada mudança pequena.
+- **Não** abrir vários ficheiros de doc para o mesmo assunto — preferir **um** local ou secção curta.
+- Quando documentar **comportamento** (API, fluxo, decisão): seja **sucinto**, **objetivo** e **pragmático** — só o que o próximo leitor precisa para agir.
+- **Só criar doc** se o utilizador pedir, se for requisito explícito da tarefa, ou se omitir deixaria o projeto inexplicável (ex.: variáveis de ambiente críticas). Caso contrário, **código claro + comentário pontual** costuma bastar.
+- **Não** sugerir “documentação extra” no fim da tarefa nem transformar respostas em novos `.md` no repositório sem pedido.
+
+**Resumo:** menos ficheiros, menos palavras, só o essencial.

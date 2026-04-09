@@ -1,6 +1,6 @@
 ---
-name: levanta-criterios-local
-description: Fetches a Figma screen via MCP and produces Objectives and Acceptance criteria per functionality. Use when the user provides a Figma design link and asks to "levantar objetivo e critérios de aceite", "objetivos e critérios por tela", or similar, with a list of functionalities.
+name: levantamento-de-criterios-figma
+description: Busca tela no Figma via MCP e produz objetivos e critérios de aceite por funcionalidade. Use com link do Figma e lista de funcionalidades; integra com /especificar quando a spec precisar desse nível de detalhe visual.
 ---
 
 # Objetivos e Critérios de Aceite a partir do Figma

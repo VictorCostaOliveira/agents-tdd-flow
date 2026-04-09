@@ -1,6 +1,10 @@
 # Ignore everything in .cursor
 *
 !agents/
+!rules/
+!rules/**
+!commands/
+!commands/**
 !agents/**
 !skills/
 !skills/**

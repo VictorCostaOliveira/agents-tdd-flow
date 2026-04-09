@@ -1,60 +1,74 @@
 ---
 name: tdd
-description: Implementa uma funcionalidade a partir de um link do Figma e critérios de aceite: levanta specs visuais via Figma MCP, depois cria testes (testivos) e implementa em TDD (devoso). Use quando o usuário tiver um link do Figma, objetivo/critérios de aceite e quiser testes primeiro e implementação em seguida.
+description: Implementa funcionalidade a partir de Figma e critérios de aceite em 4 etapas com artefatos obrigatórios por agente — LAYOUT_SPEC.md (figoso), TESTS.md + testes (testivos), DEV.md + código (devoso), AVALIACAO.md (avaliason). Use com link Figma, objetivo/critérios e fluxo TDD completo.
 ---
 
 # Figma + Critérios de Aceite + TDD
 
-Implementa uma **funcionalidade** (qualquer tela ou bloco de UI) a partir de um design no Figma: levanta especificações visuais via MCP, cria testes com base nos critérios de aceite e implementa até os testes passarem.
+Implementa uma **funcionalidade** (tela ou bloco de UI) com **pipeline fixo de artefatos**: cada agente **sempre** entrega um documento (ou documento + código) **nesta ordem**, sem pular etapas. Isso vale **sempre** — invocado por esta skill **ou** chamada direta a qualquer um dos agentes (`figoso`, `testivos`, `devoso`, `avaliason`).
+
+## Artefatos por etapa (obrigatórios)
+
+| Etapa | Agente | Artefato(s) | Ordem de trabalho |
+|-------|--------|---------------|---------------------|
+| 1 | **figoso** | **`LAYOUT_SPEC.md`** | Único entregável desta etapa (layout + estrutura de componentes). |
+| 2 | **testivos** | **`TESTS.md`** → depois **arquivos de teste** (`.spec.` / `.test.`) | **Primeiro** escrever `TESTS.md` com todos os cenários (mapeando critérios de aceite + `LAYOUT_SPEC.md`/Figma). **Depois** implementar os testes no código. |
+| 3 | **devoso** | **`DEV.md`** → depois **código** | **Primeiro** escrever `DEV.md` com planejamento (arquivos, métodos, ordem) **com base nos testes** existentes. **Depois** implementar até todos passarem, **sem alterar testes**. |
+| 4 | **avaliason** | **`AVALIACAO.md`** | **Primeiro** analisar o diff/código. **Depois** persistir **todos** os pontos levantados em `AVALIACAO.md` para o **devoso** ler e corrigir. |
+
+**Onde salvar:** na **pasta da feature** (mesmo diretório do `LAYOUT_SPEC.md` ou pasta acordada no contexto). Nomes fixos: `LAYOUT_SPEC.md`, `TESTS.md`, `DEV.md`, `AVALIACAO.md`.
 
 ## Input necessário
 
-- **Link do Figma** da tela ou do nó (ex.: `https://www.figma.com/design/AbC123xYz456DeF789gHi0/...?node-id=1234-5678`)
-- **Objetivo** (opcional, uma frase): o que a funcionalidade deve permitir ao usuário
-- **Critérios de aceite** (recomendado máx. 5): testáveis; servem de base para os testes e para a implementação
+- **Link do Figma** do nó/tela
+- **Objetivo** (opcional, uma frase)
+- **Critérios de aceite** (recomendado máx. 5), testáveis
 
-## Fluxo em 4 etapas
+## Fluxo em 4 etapas (detalhado)
 
-### 1. Levantar specs do Figma e definir estrutura de componentes (figoso)
+### 1. Figoso → `LAYOUT_SPEC.md`
 
-- Invocar o **agente figoso** (ver `.cursor/agents/figoso.md`): ele é especialista em analisar Figma via MCP e produzir LAYOUT_SPEC.md + estrutura de componentes.
-- Entregar como input: **link do Figma** (e, se houver, pasta/contexto da feature onde o spec deve ser salvo).
-- O figoso:
-  - Extrai da URL `fileKey` e `nodeId`; chama Figma MCP (`get_design_context`, `get_screenshot`) com `clientLanguages: "typescript"`, `clientFrameworks: "vue"`.
-  - Produz **LAYOUT_SPEC.md** na pasta da feature (cores → tokens Tailwind, tipografia, espaçamentos, componentes visuais; ver skill `figma-design-system`).
-  - Define **estrutura de componentes**: página/rota, componentes novos, pastas (seguindo `folder-structure` e `vue-components`), responsabilidade de cada um.
-- Resultado desta etapa: **LAYOUT_SPEC.md** + documentação da estrutura de componentes (no próprio spec ou em bloco dedicado). Usar esse resultado como contexto nas etapas 2 e 3.
-- Não invente assets, tente baixar os assets presentes na tela com o MCP do figma para usar os assets de corretos.
+- Invocar **figoso** (`.cursor/agents/figoso.md`).
+- Input: link do Figma + pasta da feature.
+- Saída obrigatória: **`LAYOUT_SPEC.md`** (MCP `get_design_context` / `get_screenshot`, tokens, estrutura de componentes).
+- Não inventar assets; preferir download via MCP quando existir.
 
-### 2. Criar testes (testivos)
+### 2. Testivos → `TESTS.md` **antes** dos testes no código
 
-- Chamar o **subagente testivos** (`mcp_task` com `subagent_type: "testivos"`).
-- Entregar como contexto:
-  - **Objetivo** e **critérios de aceite** (input do usuário).
-  - Resultado do **passo 1 (figoso)**: onde a feature fica (página, rotas), **quais componentes** foram definidos e o **LAYOUT_SPEC.md** (ou resumo) para alinhar expectativas visuais.
-- Instruir: criar testes (Vitest + @vue/test-utils) que validem os critérios de aceite; seguir convenções do projeto (describe/context/it, helpers de mount do app).
-- **Não** alterar testes existentes; apenas criar novos.
+- Invocar **testivos** (`subagent_type: "testivos"`).
+- Contexto: objetivo, critérios de aceite, `LAYOUT_SPEC.md` + estrutura de componentes.
+- **Fluxo obrigatório do testivos:**
+  1. **Planejar cenários** a partir dos critérios e do layout (estados, interações, edge cases).
+  2. **Escrever `TESTS.md`** listando **todos** os cenários/specs que serão codificados (describe/context/it planejados ou equivalente).
+  3. **Só então** criar/editar arquivos de teste reais (Vitest + @vue/test-utils, etc.).
+- **Não** alterar testes **já existentes** do projeto; apenas adicionar novos.
+- Entrega da etapa: **`TESTS.md`** + arquivos de teste novos.
 
-### 3. Implementar conforme testes (devoso)
+### 3. Devoso → `DEV.md` **antes** da implementação
 
-- Chamar o **subagente devoso** (`mcp_task` com `subagent_type: "devoso"`).
-- Entregar como contexto:
-  - Objetivo e critérios de aceite.
-  - Resultado do **passo 1 (figoso)**: estrutura de componentes e LAYOUT_SPEC.md.
-  - Que os **testes já foram criados** pelo testivos e que a implementação deve fazer **todos os testes passarem**, **sem alterar os testes**.
-- Instruir: implementar em TDD; seguir padrões do app (Composition API, `useI18n`, tipos em `types/`, componentes `@acme/ui`, Tailwind com tokens).
+- Invocar **devoso** (`subagent_type: "devoso"`).
+- Contexto: critérios, `LAYOUT_SPEC.md`, **`TESTS.md`**, paths dos arquivos de teste criados.
+- **Fluxo obrigatório do devoso:**
+  1. **Ler** testes e `TESTS.md`.
+  2. **Escrever `DEV.md`**: arquivos a criar/alterar, métodos/funções principais, ordem sugerida (alinhada aos testes).
+  3. **Só então** implementar código até **todos** os testes passarem, **sem alterar testes**.
+- Entrega da etapa: **`DEV.md`** + código.
 
-### 4. Após implementação (avaliason)
+### 4. Avaliason → `AVALIACAO.md`
 
-- Chamar o **subagente avaliason** para analisar as changes feitas e levantar melhorias e devolver para o devoso para ele implementar as changes.
+- Invocar **avaliason** após a implementação.
+- **Fluxo obrigatório do avaliason:**
+  1. Revisar mudanças (git diff / escopo combinado).
+  2. **Escrever `AVALIACAO.md`** com **todos** os pontos (severidade, arquivo, sugestão), no mesmo espírito do formato de review do agente — documento único para o devoso consumir.
+  3. O **devoso** (nova invocação se necessário) lê **`AVALIACAO.md`** e aplica correções **sem alterar testes**, até fechar os itens acordados.
 
 ### IMPORTANTE
-- todos os subagentes DEVEM ser chamados. Se algum agente tiver problema para ser invocado, voce deve tentar novamente. Nao quero que voce execute as tarefas sem ser com o agente quando essa skill for invocada.
-- **Passo 1:** chamar o figoso com o link do Figma para obter LAYOUT_SPEC.md e estrutura de componentes.
-- **Passo 2:** chamar o subagente testivos para gerar os testes (com base em objetivo, critérios de aceite e resultado do figoso).
-- **Passo 3:** chamar o devoso para implementar em TDD: fazer um teste passar (sem alterar o teste), depois o próximo cenário, e assim sucessivamente.
-- **Passo 4:** após terminar a implementação, chamar o avaliason para avaliar o código e o devoso para corrigir os TODOS pontos levantados.
-- Seguir o flow do TDD: teste → faz o teste passar → avalia e refatora → próximo cenário.
+
+- **Todos** os subagentes **devem** ser chamados em sequência. Se a invocação falhar, **tentar de novo**. Não substituir o trabalho do agente “na mão” quando esta skill estiver ativa.
+- **Nunca** pular: `TESTS.md` antes dos testes; `DEV.md` antes do código; `AVALIACAO.md` como registro completo da revisão.
+- **Figoso** → somente `LAYOUT_SPEC.md` como artefato de spec de layout.
+- **Testivos** e **devoso** seguem o **mesmo padrão em duas fases**: **documento de planejamento primeiro**, **código depois**.
+- TDD: fazer testes passarem um a um (ou em lotes coerentes), refatorar com segurança, repetir.
 
 ## Regras rápidas
 
@@ -62,12 +76,12 @@ Implementa uma **funcionalidade** (qualquer tela ou bloco de UI) a partir de um 
 |-------|--------|
 | Textos visíveis | Sempre i18n (pt-BR); nunca hardcoded |
 | Estilos | Tailwind; tokens do preset; sem `<style scoped>` |
-| Componentes | Reutilizar do `@acme/ui` quando existir equivalente |
-| Testes | Não alterar testes existentes; testivos cria, devoso implementa até passar |
+| Componentes | Reutilizar `@acme/ui` quando existir equivalente |
+| Testes | Não alterar testes existentes; testivos cria novos; devoso só implementa |
 | Naming | PascalCase componentes; props/emits camelCase; i18n snake_case |
 
 ## Referências
 
-- Agente: **figoso** (levantar specs do Figma e estrutura de componentes via MCP).
+- Agentes: **figoso**, **testivos**, **devoso**, **avaliason** (`.cursor/agents/*.md`) — cada um com fluxo **doc primeiro → execução**.
 - Skills: `figma-design-system`, `figma-objetivos-criterios`, `testing`, `vue-components`, `folder-structure`, `ui-library`
-- Exemplo de spec de layout no repo: `apps/web/src/components/orders/OrderList/LAYOUT_SPEC.md`
+- Exemplo de layout: `apps/web/src/components/orders/OrderList/LAYOUT_SPEC.md`
