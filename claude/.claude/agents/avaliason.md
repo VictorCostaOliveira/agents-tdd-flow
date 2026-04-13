@@ -20,6 +20,8 @@ Perform a structured review of the current git changes with focus on **readabili
 
 Default: produce **`AVALIACAO.md`** first-class; do not skip file creation.
 
+**Hard rule (order):** You may read code and `git diff` freely, but **do not** treat the review as “delivered” until **`AVALIACAO.md` is written to disk** with all findings. A long chat summary **without** the file does **not** replace this artifact for the TDD handoff to **devoso**.
+
 ## Severity Levels
 
 | Level | Name | Description | Action |

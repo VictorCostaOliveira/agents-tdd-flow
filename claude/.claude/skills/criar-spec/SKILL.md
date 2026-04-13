@@ -38,7 +38,7 @@ SPECIFY ──→ PLAN ──→ TASKS ──→ IMPLEMENT
 
 ### Phase 1: Specify
 
-This skill defines **what** a good spec contains and **how** Phase 1 is gated; the **work of Phase 1 is always done by the `requison` subagent** — not by improvising the full spec in the main conversation. Same delegation pattern as **`levantamento-de-criterios-figma`** → requison or **TDD** → figoso/testivos: the executing agent **orchestrates** and **consolidates**; requison **elicits and drafts** the core specification.
+This skill defines **what** a good spec contains and **how** Phase 1 is gated; the **work of Phase 1 is always done by the `requison` subagent** — not by improvising the full spec in the main conversation. Same delegation pattern as **`cria-criterios`** → requison or **TDD** → figoso/testivos: the executing agent **orchestrates** and **consolidates**; requison **elicits and drafts** the core specification.
 
 #### Mandatory: delegate Phase 1 to **requison**
 
@@ -52,7 +52,7 @@ Requison owns strategic questions, the **ASSUMPTIONS** block, functional/non-fun
 
 #### When a Figma design is present
 
-If there is a **Figma** URL, named frame, or **design-led** work, **requison** must run this flow **before** locking spec content — aligned with `levantamento-de-criterios-figma` / `levanta-criterios-local`:
+If there is a **Figma** URL, named frame, or **design-led** work, **requison** must run this flow **before** locking spec content — aligned with **`cria-criterios`**:
 
 1. **Parse the link**
    - Pattern: `https://www.figma.com/design/:fileKey/:fileName?node-id=XXXX-YYYY` (and variants with `branch/` — use the branch key as `fileKey` when applicable).
@@ -68,14 +68,14 @@ If there is a **Figma** URL, named frame, or **design-led** work, **requison** m
 
 3. **Turn design into spec input** (requison’s responsibility under delegation)
    - List **screens, states, and flows** visible or implied (empty, loading, error, success).
-   - Capture **copy**, **labels**, **table columns**, **status values** shown in the UI — be precise (same rigor as `levantamento-de-criterios-figma`: enums, order of elements, actions next to content).
+   - Capture **copy**, **labels**, **table columns**, **status values** shown in the UI — be precise (same rigor as **`cria-criterios`**: enums, order of elements, actions next to content).
    - Note **constraints** the design implies (required fields, max lengths if annotated, breakpoints if multiple frames).
    - **Unresolved behavior** (what happens on submit, API errors) → **Open Questions**, not guesses.
 
 4. **Merge into this skill’s spec template** (expected requison output)
    - **Objective** and **Success Criteria** should reflect what the design shows *and* what the product must achieve (design fidelity + business outcomes).
    - Add a short **Design reference** subsection if useful: Figma link, `fileKey`, `nodeId`, and date retrieved — so implementers can reopen the same node.
-   - If the user asked for **objectives and acceptance criteria per functionality** (by screen or feature list), produce that block in the same style as `levantamento-de-criterios-figma` (objectives ≥ 1 per item, testable criteria, Portuguese if the project/user uses Portuguese) **inside** the spec, then keep the rest of the six core areas (commands, structure, tests, boundaries) as usual.
+   - If the user asked for **objectives and acceptance criteria per functionality** (by screen or feature list), produce that block in the same style as **`cria-criterios`** (objectives ≥ 1 per item, testable criteria, Portuguese if the project/user uses Portuguese) **inside** the spec, then keep the rest of the six core areas (commands, structure, tests, boundaries) as usual.
 
 5. **Still surface assumptions**
    - Design shows *what* the UI looks like, not always *backend rules* or *permissions*. After pulling Figma, list **ASSUMPTIONS** about data, auth, and edge cases; ask the human to confirm.

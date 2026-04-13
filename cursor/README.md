@@ -2,7 +2,30 @@
 
 Uma suite de agentes especializados para desenvolvimento Rails + Vue.js seguindo TDD e boas práticas.
 
-**Pacote Cursor neste repositório:** esta pasta (`cursor/`) contém a versão para o **Cursor**. Para usar: copia `rules/` → `.cursor/rules/`, `agents/` → `.cursor/agents/`, `skills/` → `~/.cursor/skills/` (ou estrutura equivalente no projeto), `commands/` → `.cursor/commands/`. No mesmo repositório existe o pacote paralelo em **`claude/`** (formato Claude Code) — vê o `README.md` na raiz do repositório.
+**Pacote Cursor neste repositório:** esta pasta (`cursor/`) contém a versão para o **Cursor**. Para usar: copia `rules/` → `.cursor/rules/`, `agents/` → `.cursor/agents/`, `skills/` → `~/.cursor/skills/` (ou estrutura equivalente no projeto), `commands/` → `.cursor/commands/`. No mesmo repositório existe o pacote paralelo em **`claude/`** (formato Claude Code) — vê o **`README.md` na raiz** do repositório para o mapa atual de skills, comandos e fluxo TDD.
+
+### Skills e comandos (bundle atual)
+
+| Skill | Pasta |
+|-------|--------|
+| TDD com agentes (Task) | `skills/test-driven-development/` |
+| TDD por skills (sem subagentes) | `skills/test-driven-development-skills/` + `tdd-layout-spec`, `tdd-tests-plan`, `tdd-tests-implement`, `tdd-dev`, `tdd-refactor`, `tdd-avaliacao` |
+| Spec antes do código | `skills/criar-spec/` |
+| Critérios a partir do Figma | `skills/cria-criterios/` |
+| Descrição de PR pela branch | `skills/pr-description-from-branch/` |
+| Postman | `skills/postman/` |
+
+| Comando | Arquivo |
+|---------|---------|
+| `/tdd` | `commands/tdd.md` |
+| `/do-tdd` | `commands/do-tdd.md` |
+| `/especificar` | `commands/especificar.md` |
+| `/cria-criterios` | `commands/cria-criterios.md` |
+| `/pr-desc` | `commands/pr-desc.md` |
+
+**TDD (resumo):** `LAYOUT_SPEC.md` → `TESTS.md` (árvore `### A.` + bloco `text` / describe·context·it) → arquivos de teste (Fase B pode deixar a suíte **vermelha**) → `DEV.md` + implementação (**devoso** / `tdd-dev`) até verde → `REFACTOR.md` → `AVALIACAO.md`. Detalhes nos `SKILL.md` e em `agents/testivos.md`, `agents/devoso.md`.
+
+---
 
 ## 🎯 Agentes Disponíveis
 

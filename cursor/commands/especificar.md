@@ -4,12 +4,12 @@ description: Definir — especificação antes do código (Figma, critérios de 
 
 Fluxo sugerido: **DEFINIR** → `/tdd`
 
-**Onde ficam as skills:** em `~/.cursor/skills/<nome-da-pasta>/SKILL.md` (use o nome da pasta abaixo; não use caminho absoluto com usuário).
+**Onde ficam as skills:** em `~/.cursor/skills/<nome-da-pasta>/SKILL.md` (use o nome da pasta abaixo; não use caminho absoluto com usuário). O fluxo TDD usa a skill **`test-driven-development`** (comando **`/tdd`**).
 
 Leia e siga por completo, nesta ordem de importância:
 
 1. **`criar-spec`** — desenvolvimento guiado por especificação (**sempre** delegue a parte de especificação ao subagente **requison**, como a skill exige; depois funda no `SPEC.md`)  
-2. Se for detalhar critérios a partir do Figo: **`levanta-criterios-local`** — levantamento de critérios  
+2. Se for detalhar critérios a partir do Figo: **`cria-criterios`** — objetivos e critérios de aceite  
 3. Para UI depois: **`frontend-ui-engineering`** — engenharia de UI  
 4. Com frames Figo na spec: **`figma-implement-design`** — fidelidade ao layout (geralmente em `~/.cursor/plugins/cache/cursor-public/figma/*/skills/figma-implement-design/SKILL.md`; o hash da pasta pode mudar — localize com glob `**/figma-implement-design/SKILL.md` sob `~/.cursor/plugins`).
 
@@ -18,7 +18,7 @@ Leia e siga por completo, nesta ordem de importância:
 **Quando a feature já está bem definida** (objetivo e escopo claros):
 
 - O **requison** ainda assim produz o núcleo da spec; evite re-perguntar o óbvio no handoff.
-- Com **link do Figma** e lista de funcionalidades ou telas: o fluxo MCP e o rigor de **`levanta-criterios-local`** entram como parte do que o requison aplica (e você valida no `SPEC.md`).
+- Com **link do Figma** e lista de funcionalidades ou telas: o fluxo MCP e o rigor de **`cria-criterios`** entram como parte do que o requison aplica (e você valida no `SPEC.md`).
 
 **Reuso de UI (obrigatório na spec):**
 

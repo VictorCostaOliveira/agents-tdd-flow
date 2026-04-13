@@ -7,8 +7,8 @@ Este ficheiro faz parte do **bundle Claude** deste repositório. No teu projeto 
 - Stack mental: **Rails + Vue.js**, TDD (RSpec + Vitest), especificação antes de código quando a demanda for vaga.
 - **Regras modulares:** ficheiros em `.claude/rules/*.md` (commits sem autorização, documentação mínima, mapeamento de API, padrões Rails/testes).
 - **Agentes (personas):** `.claude/agents/*.md` — requison, devoso, testivos, figoso, avaliason, verifier, etc.
-- **Skills (fluxos):** `.claude/skills/<nome>/SKILL.md` — por exemplo `tdd`, `criar-spec`, `levanta-criterios-local`, `postman`.
-- **Comandos slash:** `.claude/commands/*.md` — por exemplo `especificar.md` (definir spec antes do código).
+- **Skills (fluxos):** `.claude/skills/<nome>/SKILL.md` — `test-driven-development` (agentes), `test-driven-development-skills` + `tdd-layout-spec`, `tdd-tests-plan`, `tdd-tests-implement`, `tdd-dev`, `tdd-refactor`, `tdd-avaliacao` (sem subagentes), `criar-spec`, `cria-criterios`, `pr-description-from-branch`, `postman`.
+- **Comandos slash:** `.claude/commands/*.md` — por exemplo `especificar.md`, `tdd.md`, `do-tdd.md`, `cria-criterios.md`, `pr-desc.md`.
 
 ## Instalação a partir deste repositório
 
@@ -28,7 +28,7 @@ Este ficheiro faz parte do **bundle Claude** deste repositório. No teu projeto 
 ## Fluxo sugerido (resumo)
 
 1. **requison** — especificação e critérios de aceite quando o pedido for vago.  
-2. **Planeamento / TDD** — alinhar com `arquiteto.md` ou fluxo da skill `tdd` (artefatos `LAYOUT_SPEC.md`, `TESTS.md`, `DEV.md`, `AVALIACAO.md`).  
+2. **Planeamento / TDD** — alinhar com `arquiteto.md` ou skills `test-driven-development` / `test-driven-development-skills` (artefatos `LAYOUT_SPEC.md`, `TESTS.md`, `DEV.md`, `AVALIACAO.md`).  
 3. **devoso** — implementação sem alterar testes existentes sem autorização.  
 4. **verifier** — validar que “feito” é mesmo feito.  
 5. **avaliason** — revisão de código no diff atual.

@@ -1,6 +1,6 @@
 ---
-name: levantamento-de-criterios-figma
-description: Busca tela no Figma via MCP e produz objetivos e critérios de aceite por funcionalidade. Use com link do Figma e lista de funcionalidades; integra com /especificar quando a spec precisar desse nível de detalhe visual.
+name: cria-criterios
+description: Busca tela no Figma via MCP e produz objetivos e critérios de aceite por funcionalidade. Usar com link do Figma e lista de funcionalidades; integra com /especificar e /cria-criterios quando a spec precisar desse nível de detalhe visual.
 ---
 
 # Objetivos e Critérios de Aceite a partir do Figma
