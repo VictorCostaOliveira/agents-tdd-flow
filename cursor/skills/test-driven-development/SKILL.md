@@ -37,7 +37,7 @@ O plano de testes é **sempre** uma **árvore legível**: cabeçalhos `### A.`, 
 ```text
 describe('OrderItemModal')
   describe('when closed (open=false)')
-    it('does not render modal content in the document / UiModal receives open=false')
+    it('does not render modal content in the document / BaseModal receives open=false')
 ```
 
 Detalhes e regras completas: **`~/.cursor/agents/testivos.md`**. Na **Fase B**, o testivos **converte** a árvore para arquivos de teste reais; a suíte deve poder **falhar** (vermelho) — **sem** implementar a feature nem atalhos para verde; isso fica para **devoso** (etapa 3).
@@ -114,7 +114,7 @@ Detalhes e regras completas: **`~/.cursor/agents/testivos.md`**. Na **Fase B**, 
 |-------|--------|
 | Textos visíveis | Sempre i18n (pt-BR); nunca hardcoded |
 | Estilos | Tailwind; tokens do preset; sem `<style scoped>` |
-| Componentes | Reutilizar `@acme/ui` quando existir equivalente |
+| Componentes | Reutilizar a biblioteca de componentes do projeto quando existir equivalente |
 | Testes | Não alterar testes existentes; testivos cria novos; devoso e refoso **não** tocam em testes |
 | Naming | PascalCase componentes; props/emits camelCase; i18n snake_case |
 
@@ -123,4 +123,4 @@ Detalhes e regras completas: **`~/.cursor/agents/testivos.md`**. Na **Fase B**, 
 - **Skills por etapa (sem subagentes Task):** `test-driven-development-skills` — `~/.cursor/skills/test-driven-development-skills/SKILL.md`; comando **`/tdd-skills`**.
 - Agentes: **figoso**, **testivos**, **devoso**, **refoso**, **avaliason** (`.cursor/agents/*.md` no projeto ou `~/.cursor/agents/`) — fluxo **doc primeiro → execução** onde aplicável.
 - Skills: `figma-design-system`, `figma-objetivos-criterios`, `testing`, `vue-components`, `folder-structure`, `ui-library`
-- Exemplo de layout: `apps/web/src/components/orders/OrderList/LAYOUT_SPEC.md`
+- Exemplo de layout: um `LAYOUT_SPEC.md` que já exista no repo

@@ -15,6 +15,7 @@ Não é uma aplicação: é **configuração reutilizável** (personas, fluxos e
 
 | Skill | Função |
 |-------|--------|
+| **`feature`** (só Claude Code) | Do PRD à feature pronta com um comando: grill até a SPEC, plano com **modelo e effort por fase**, execução delegada ao **devoso** com avaliação de cada fase e escalada de modelo na reprovação, auditoria final com **avaliason** e **security-auditor**. Para na aprovação da SPEC e do plano. |
 | **`test-driven-development`** | Pipeline TDD com **agentes** (Task): figoso → testivos → devoso → refoso → avaliason; artefatos `LAYOUT_SPEC.md`, `TESTS.md`, `DEV.md`, `REFACTOR.md`, `AVALIACAO.md`. |
 | **`test-driven-development-skills`** | Mesmo pipeline **sem subagentes**: uma skill por etapa (`tdd-layout-spec`, `tdd-tests-plan`, `tdd-tests-implement`, `tdd-dev`, `tdd-refactor`, `tdd-avaliacao`). |
 | **`criar-spec`** | Spec antes do código; Fase 1 costuma ir ao **requison**. |
@@ -33,6 +34,21 @@ Não é uma aplicação: é **configuração reutilizável** (personas, fluxos e
 | `/especificar` | `especificar.md` | Spec antes do código + **requison**; alinha com **cria-criterios** se houver Figma. |
 | `/cria-criterios` | `cria-criterios.md` | Atalho para a skill **cria-criterios**. |
 | `/pr-desc` | `pr-desc.md` | Atalho para **pr-description-from-branch**. |
+
+---
+
+## Modelos dos agentes
+
+No Claude Code, cada agente declara `model` e `effort` no frontmatter, e os revisores bloqueiam escrita com `disallowedTools`:
+
+| Nível | Agentes |
+|---|---|
+| `opus` / `high` | arquiteto, avaliason, code-reviewer, requison, security-auditor |
+| `sonnet` / `high` | infrason, verifier |
+| `sonnet` / `medium` | cobrinha, css-html-specialist, devoso, figoso, refoso, test-engineer, testivos, wiki |
+| `sonnet` / `low` | postoso |
+
+O `/feature` sobrescreve o modelo por fase na chamada. No Cursor, os agentes usam `model: inherit` e `readonly: true` nos revisores.
 
 ---
 

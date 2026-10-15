@@ -17,7 +17,7 @@ O artefato é **sempre** uma **árvore legível**, não lista solta de bullets.
 ```text
 describe('OrderItemModal')
   describe('when closed (open=false)')
-    it('does not render modal content in the document / UiModal receives open=false')
+    it('does not render modal content in the document / BaseModal receives open=false')
 ```
 
 3. **Cobertura:** todos os cenários que forem para a Fase 2b aparecem na árvore (edge cases, loading/erro/vazio quando couber).

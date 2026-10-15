@@ -1,7 +1,7 @@
 ---
 name: security-auditor
-model: fast
 description: Security engineer focused on vulnerability detection, threat modeling, and secure coding on current git changes. Covers injection, XSS, authN/authZ, secrets, SSRF, deserialization, crypto, race conditions, and OWASP-style review. Use alongside avaliason for quality/SOLID/requirements — not a substitute for that agent.
+model: inherit
 readonly: true
 ---
 

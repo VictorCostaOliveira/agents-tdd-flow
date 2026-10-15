@@ -302,7 +302,6 @@ cursor/agents/
 ├── figoso.md                       # 🎨 Layout a partir do Figma (LAYOUT_SPEC)
 ├── testivos.md                     # 🧪 Especialista em testes (Vitest, RSpec)
 ├── postoso.md                      # 📮 Postman / documentação de API
-├── postman.md                      # 📮 Variante Postman
 ├── infrason.md                     # 🐳 Infraestrutura e DevOps (Docker, K8s, CI/CD)
 ├── cobrinha.md                     # 🐍 Especialista Python
 ├── code-reviewer.md                # 🔎 Revisor genérico
