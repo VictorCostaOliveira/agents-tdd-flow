@@ -1,5 +1,5 @@
 ---
-description: Evitar READMEs e .md desnecessários; documentação só quando precisa, sucinta e em poucos arquivos.
+description: Documentação — mínimo necessário
 alwaysApply: true
 ---
 

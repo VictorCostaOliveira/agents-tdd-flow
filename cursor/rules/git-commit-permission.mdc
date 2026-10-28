@@ -1,5 +1,5 @@
 ---
-description: Nunca fazer commit sem autorização explícita do usuário; commitar só quando pedido ou autorizado.
+description: Commits — somente com permissão
 alwaysApply: true
 ---
 

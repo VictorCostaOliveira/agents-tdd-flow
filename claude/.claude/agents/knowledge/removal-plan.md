@@ -1,52 +1,52 @@
-# Removal and Iteration Plan Template
+# Template de plano de remoção
 
-## Priority Levels
+## Prioridade
 
-- [ ] **P0**: Immediate removal needed (security risk, significant cost, blocking other work)
-- [ ] **P1**: Remove in current sprint
-- [ ] **P2**: Backlog / next iteration
+- [ ] **P0:** remover já (risco de segurança, custo relevante, bloqueia outro trabalho)
+- [ ] **P1:** remover na sprint atual
+- [ ] **P2:** backlog / próxima iteração
 
 ---
 
-## Safe to Remove Now
+## Seguro remover agora
 
-### Item: [Name/Description]
+### Item: [nome ou descrição]
 
-| Field | Details |
+| Campo | Detalhe |
 |-------|---------|
-| **Location** | `path/to/file.ts:line` |
-| **Rationale** | Why this should be removed |
-| **Evidence** | Unused (no references), dead feature flag, deprecated API |
-| **Impact** | None / Low - no active consumers |
-| **Deletion steps** | 1. Remove code 2. Remove tests 3. Remove config |
-| **Verification** | Run tests, check no runtime errors, monitor logs |
+| **Local** | `caminho/do/arquivo.rb:linha` |
+| **Motivo** | Por que deve sair |
+| **Evidência** | Sem referências, feature flag morta, API descontinuada |
+| **Impacto** | Nenhum / baixo, sem consumidores ativos |
+| **Passos** | 1. Remover código 2. Remover testes 3. Remover config |
+| **Verificação** | Rodar testes, conferir que nada quebra em runtime, observar logs |
 
 ---
 
-## Defer Removal (Plan Required)
+## Adiar remoção (exige plano)
 
-### Item: [Name/Description]
+### Item: [nome ou descrição]
 
-| Field | Details |
+| Campo | Detalhe |
 |-------|---------|
-| **Location** | `path/to/file.ts:line` |
-| **Why defer** | Active consumers, needs migration, stakeholder sign-off |
-| **Preconditions** | Feature flag off for 2 weeks, telemetry shows 0 usage |
-| **Breaking changes** | List any API/contract changes |
-| **Migration plan** | Steps for consumers to migrate |
-| **Timeline** | Target date or sprint |
-| **Owner** | Person/team responsible |
-| **Validation** | Metrics to confirm safe removal (error rates, usage counts) |
-| **Rollback plan** | How to restore if issues found |
+| **Local** | `caminho/do/arquivo.rb:linha` |
+| **Por que adiar** | Consumidores ativos, exige migração, aprovação de stakeholder |
+| **Pré-condições** | Feature flag desligada há 2 semanas, telemetria com uso zero |
+| **Quebras de contrato** | Mudanças de API ou contrato |
+| **Plano de migração** | Passos para os consumidores migrarem |
+| **Prazo** | Data ou sprint alvo |
+| **Responsável** | Pessoa ou time |
+| **Validação** | Métricas que confirmam a remoção segura (erros, contagem de uso) |
+| **Rollback** | Como restaurar se der problema |
 
 ---
 
-## Checklist Before Removal
+## Checklist antes de remover
 
-- [ ] Searched codebase for all references (`rg`, `grep`)
-- [ ] Checked for dynamic/reflection-based usage
-- [ ] Verified no external consumers (APIs, SDKs, docs)
-- [ ] Feature flag telemetry reviewed (if applicable)
-- [ ] Tests updated/removed
-- [ ] Documentation updated
-- [ ] Team notified (if shared code)
+- [ ] Buscou todas as referências no código (`rg`, `grep`)
+- [ ] Conferiu uso dinâmico ou por reflexão
+- [ ] Confirmou que não há consumidor externo (APIs, SDKs, docs)
+- [ ] Revisou telemetria da feature flag, se houver
+- [ ] Testes atualizados ou removidos
+- [ ] Documentação atualizada
+- [ ] Time avisado, se o código for compartilhado

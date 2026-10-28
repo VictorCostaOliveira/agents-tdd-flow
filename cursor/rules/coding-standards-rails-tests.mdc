@@ -1,5 +1,5 @@
 ---
-description: Padrões antes de alterar código; métodos ≤15 linhas e DRY; testes intocáveis salvo pedido; Rails migrations só com autorização e generators.
+description: Geral
 alwaysApply: true
 ---
 
