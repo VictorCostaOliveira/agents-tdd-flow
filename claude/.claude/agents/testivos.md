@@ -37,7 +37,7 @@ Escrever testes para código existente, revisar a qualidade de uma suíte ou dia
 
 ## Como escrever
 
-- Antes de escrever, abra um teste vizinho do repo e copie o molde: factories, helpers de mount, mocks, nomenclatura. As regras de teste do projeto (`CLAUDE.md`, `.cursor/rules`) valem sobre o que está aqui.
+- Antes de escrever, abra um teste vizinho do repo e copie o molde: factories, helpers de mount, mocks, nomenclatura. As regras de teste do projeto (`CLAUDE.md`, `.claude/rules`) valem sobre o que está aqui.
 - **RSpec:** `describe`/`context` por comportamento, um `it` por expectativa, factories, request spec para API (status e JSON), serviços externos mockados.
 - **Vitest + Vue:** `mount` (ou o helper do projeto com i18n e Pinia), testes de comportamento por props, emits e interação; `vi.fn`, `vi.mock`, `vi.hoisted` para mock dentro de `vi.mock`.
 - Teste o comportamento e o contrato, não detalhe de implementação.

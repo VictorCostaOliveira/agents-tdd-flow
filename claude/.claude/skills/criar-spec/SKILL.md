@@ -1,253 +1,240 @@
 ---
 name: criar-spec
-description: Creates specifications before code. Phase 1 (Specify) is always delegated to the requison subagent — it elicits requirements and drafts content aligned to this skill’s template. Use when starting a project, feature, or large change without a spec. With Figma, run the MCP flow (below) before locking the spec. Suggested Cursor command /especificar.
+description: Cria a especificação antes do código. A Fase 1 (especificar) é sempre delegada ao agente requison, que elicita os requisitos e redige o núcleo da spec no template desta skill. Use ao começar um projeto, uma feature ou uma mudança grande sem spec. Com Figma, roda o fluxo MCP antes de fechar a spec. Use quando o usuário chamar /criar-spec ou pedir uma spec.
 ---
 
-# Criar spec (spec-driven development)
+# Criar spec (desenvolvimento guiado por especificação)
 
-## Overview
+## Visão geral
 
-Write a structured specification before writing any code. The spec is the shared source of truth between you and the human engineer — it defines what we're building, why, and how we'll know it's done. Code without a spec is guessing.
+Escreva uma especificação estruturada antes de qualquer código. A spec é a fonte de verdade compartilhada entre você e o engenheiro: define o que estamos construindo, por quê, e como saberemos que está pronto. Código sem spec é chute.
 
-### Ruby / Rails & Vue
+### Rails + Vue
 
-When the product is a Rails API plus a Vue SPA, the spec should name server-side (Ruby) vs client-side (Vue) responsibilities, background jobs, and API contracts explicitly—same rigor as for a Node/React stack.
+Quando o produto é uma API Rails com uma SPA Vue, a spec nomeia explicitamente as responsabilidades do servidor (Ruby) e do cliente (Vue), os jobs em background e os contratos de API.
 
-## When to Use
+## Quando usar
 
-- Starting a new project or feature
-- Requirements are ambiguous or incomplete
-- The change touches multiple files or modules
-- You're about to make an architectural decision
-- The task would take more than 30 minutes to implement
-- The user shared a **Figma** link or the feature must **match a designed screen** — run the Figma flow in **Phase 1** before locking the spec
+- Projeto ou feature nova
+- Requisitos ambíguos ou incompletos
+- Mudança que toca vários arquivos ou módulos
+- Decisão de arquitetura à frente
+- Tarefa que levaria mais de 30 minutos para implementar
+- O usuário compartilhou um link do **Figma** ou a feature precisa bater com uma tela desenhada: rode o fluxo Figma na Fase 1 antes de fechar a spec
 
-**When NOT to use:** Single-line fixes, typo corrections, or changes where requirements are unambiguous and self-contained.
+**Quando dispensar:** correção de uma linha, typo, ou mudança com requisito claro e autocontido.
 
-## The Gated Workflow
+## Fluxo com gates
 
-Spec-driven development has four phases. Do not advance to the next phase until the current one is validated.
-
-```
-SPECIFY ──→ PLAN ──→ TASKS ──→ IMPLEMENT
-   │          │        │          │
-   ▼          ▼        ▼          ▼
- Human      Human    Human      Human
- reviews    reviews  reviews    reviews
-```
-
-### Phase 1: Specify
-
-This skill defines **what** a good spec contains and **how** Phase 1 is gated; the **work of Phase 1 is always done by the `requison` subagent** — not by improvising the full spec in the main conversation. Same delegation pattern as **`cria-criterios`** → requison or **TDD** → figoso/testivos: the executing agent **orchestrates** and **consolidates**; requison **elicits and drafts** the core specification.
-
-#### Mandatory: delegate Phase 1 to **requison**
-
-1. **Invoke** the **`requison`** agent (e.g. Task tool with `subagent_type: "requison"`). **Do not** skip requison to write the spec alone “faster.”
-2. **Handoff** must include everything requison needs: product/feature name, vision or goals, constraints, **Figma URL + node** when applicable (or explicit **no design**), list of functionalities/screens, stack (e.g. Rails + Vue), language/locale, and decisions the human already made.
-3. Instruct requison to follow **this skill file** (template, six areas, ASSUMPTIONS, Figma section below) and **`agents/requison.md`**.
-4. **If invocation fails**, retry before taking shortcuts.
-5. **After** requison returns: **you** merge into **`SPEC.md`**, fill gaps from the **repository** where this skill requires local facts (real commands from `package.json`/Makefile, folder layout, style snippet), then request human review to close Phase 1.
-
-Requison owns strategic questions, the **ASSUMPTIONS** block, functional/non-functional requirements, testable success criteria, per-functionality criteria when a list exists, edge cases, and **Open Questions** in this skill’s format.
-
-#### When a Figma design is present
-
-If there is a **Figma** URL, named frame, or **design-led** work, **requison** must run this flow **before** locking spec content — aligned with **`cria-criterios`**:
-
-1. **Parse the link**
-   - Pattern: `https://www.figma.com/design/:fileKey/:fileName?node-id=XXXX-YYYY` (and variants with `branch/` — use the branch key as `fileKey` when applicable).
-   - **`fileKey`**: segment after `/design/` (or branch key if URL uses `branch/`).
-   - **`nodeId`**: query `node-id` with hyphens replaced by colons (e.g. `4415-33144` → `4415:33144`).
-   - For FigJam or other URL shapes, follow the Figma MCP server instructions in the workspace: use the documented tool for that asset type (e.g. FigJam → `get_figjam` when that is the source).
-
-2. **Fetch context via MCP (server `plugin-figma-figma`)**
-   - Read the tool descriptors under the workspace `mcps` folder for exact parameters before calling.
-   - Call **`get_design_context`** with `fileKey`, `nodeId`, and optionally `clientLanguages` / `clientFrameworks` aligned to the project (e.g. `typescript`, `vue`).
-   - Call **`get_screenshot`** with the same `fileKey` and `nodeId` for a visual anchor.
-   - If the response is thin (e.g. section node, sparse structure), rely more on **`get_screenshot`** and, if needed, **`get_metadata`** to scope the node tree.
-
-3. **Turn design into spec input** (requison’s responsibility under delegation)
-   - List **screens, states, and flows** visible or implied (empty, loading, error, success).
-   - Capture **copy**, **labels**, **table columns**, **status values** shown in the UI — be precise (same rigor as **`cria-criterios`**: enums, order of elements, actions next to content).
-   - Note **constraints** the design implies (required fields, max lengths if annotated, breakpoints if multiple frames).
-   - **Unresolved behavior** (what happens on submit, API errors) → **Open Questions**, not guesses.
-
-4. **Merge into this skill’s spec template** (expected requison output)
-   - **Objective** and **Success Criteria** should reflect what the design shows *and* what the product must achieve (design fidelity + business outcomes).
-   - Add a short **Design reference** subsection if useful: Figma link, `fileKey`, `nodeId`, and date retrieved — so implementers can reopen the same node.
-   - If the user asked for **objectives and acceptance criteria per functionality** (by screen or feature list), produce that block in the same style as **`cria-criterios`** (objectives ≥ 1 per item, testable criteria, Portuguese if the project/user uses Portuguese) **inside** the spec, then keep the rest of the six core areas (commands, structure, tests, boundaries) as usual.
-
-5. **Still surface assumptions**
-   - Design shows *what* the UI looks like, not always *backend rules* or *permissions*. After pulling Figma, list **ASSUMPTIONS** about data, auth, and edge cases; ask the human to confirm.
-
-**When NOT to skip Figma:** The user pasted a Figma link or said “spec from this screen” — requison **always** runs the MCP pull first, unless the link is broken and the human agrees to proceed without design.
-
-**Surface assumptions immediately.** Before consolidating spec content, requison lists what they're assuming:
+Quatro fases. Só avance quando a fase atual estiver validada.
 
 ```
-ASSUMPTIONS I'M MAKING:
-1. This is a web application (not native mobile)
-2. Authentication uses session-based cookies (not JWT)
-3. The database is PostgreSQL (based on existing Prisma schema or ActiveRecord models)
-4. We're targeting modern browsers only (no IE11)
-→ Correct me now or I'll proceed with these.
+ESPECIFICAR ──→ PLANEJAR ──→ TAREFAS ──→ IMPLEMENTAR
+     │             │            │             │
+     ▼             ▼            ▼             ▼
+  revisão       revisão      revisão       revisão
+  humana        humana       humana        humana
 ```
 
-Don't silently fill in ambiguous requirements. The spec's entire purpose is to surface misunderstandings *before* code gets written — assumptions are the most dangerous form of misunderstanding.
+### Fase 1: especificar
 
-**The `requison` output must cover these six core areas** (merged into the template below; the orchestrator may only complete what depends on repo inspection):
+Esta skill define **o que** uma boa spec contém e **como** a Fase 1 é gated; o **trabalho da Fase 1 é sempre do agente `requison`**. O mesmo padrão de delegação de **`criar-criterios`** → requison e do **`/tdd`** → figoso/testivos: a sessão principal orquestra e consolida; o requison elicita e redige o núcleo.
 
-1. **Objective** — What are we building and why? Who is the user? What does success look like?
+#### Obrigatório: delegar a Fase 1 ao requison
 
-2. **Commands** — Full executable commands with flags, not just tool names.
+1. **Invoque** o agente `requison` (Task com `subagent_type: "requison"`). Escrever a spec sozinho "para ir mais rápido" viola esta skill.
+2. **Handoff** completo: nome do produto ou feature, visão ou objetivos, restrições, **URL do Figma + node** quando houver (ou "sem design" explícito), lista de funcionalidades ou telas, stack (ex.: Rails + Vue), idioma, decisões que o humano já tomou.
+3. Instrua o requison a seguir **esta skill** (template, seis áreas, ASSUMPTIONS, seção Figma) e o próprio `agents/requison.md`.
+4. Se a invocação falhar, tente de novo antes de qualquer atalho.
+5. **Depois** que o requison devolver: **você** consolida em `SPEC.md`, completa com os fatos do repositório que esta skill exige (comandos reais do `package.json`, `Makefile` ou `bin/`, layout de pastas, trecho de estilo) e pede a revisão humana para fechar a Fase 1.
+
+O requison é dono das perguntas estratégicas, do bloco **ASSUMPTIONS**, dos requisitos funcionais e não-funcionais, dos critérios de sucesso testáveis, dos critérios por funcionalidade quando houver lista, dos casos de borda e das **Open Questions**.
+
+#### Quando há Figma
+
+Com URL do Figma, frame nomeado ou trabalho guiado por design, o requison roda este fluxo **antes** de fechar o conteúdo, alinhado a **`criar-criterios`**:
+
+1. **Parse do link**
+   - Padrão: `https://www.figma.com/design/:fileKey/:fileName?node-id=XXXX-YYYY` (com `branch/`, use a chave da branch como `fileKey`).
+   - `fileKey`: segmento após `/design/`.
+   - `nodeId`: `node-id` com hífen trocado por dois-pontos (`4415-33144` → `4415:33144`).
+   - FigJam e outros formatos: use a tool do MCP do Figma própria para aquele tipo (ex.: `get_figjam`).
+
+2. **Buscar contexto via MCP do Figma**
+   - `get_design_context` com `fileKey`, `nodeId` e, opcionalmente, `clientLanguages` / `clientFrameworks` alinhados ao projeto (`typescript`, `vue`).
+   - `get_screenshot` com os mesmos parâmetros, como âncora visual.
+   - Resposta rasa (section node, estrutura esparsa): apoie-se mais em `get_screenshot` e, se preciso, `get_metadata` para delimitar a árvore.
+
+3. **Transformar design em insumo de spec** (responsabilidade do requison)
+   - Liste **telas, estados e fluxos** visíveis ou implícitos (vazio, carregando, erro, sucesso).
+   - Capture **copy**, **rótulos**, **colunas de tabela** e **valores de status** com precisão (mesmo rigor de `criar-criterios`: enums, ordem dos elementos, ações ao lado do conteúdo).
+   - Anote **restrições** que o design implica (campos obrigatórios, tamanhos máximos anotados, breakpoints).
+   - **Comportamento não resolvido** (o que acontece no submit, erros de API) vai para **Open Questions**, sem chute.
+
+4. **Fundir no template** (saída esperada do requison)
+   - **Objective** e **Success Criteria** refletem o que o design mostra *e* o que o produto precisa alcançar.
+   - Subseção **Design reference**: link, `fileKey`, `nodeId`, data da consulta, para quem implementa reabrir o mesmo nó.
+   - Se o usuário pediu **objetivos e critérios por funcionalidade**, produza esse bloco no estilo de `criar-criterios` dentro da spec e mantenha as demais áreas.
+
+5. **Suposições continuam explícitas**
+   - O design mostra *como* a UI é, e raramente regras de backend ou permissões. Depois do Figma, liste **ASSUMPTIONS** sobre dados, auth e bordas, e peça confirmação.
+
+**O Figma nunca é pulado** quando o usuário colou o link ou pediu "spec a partir desta tela", salvo link quebrado e humano de acordo em seguir sem design.
+
+**Suposições vêm primeiro.** Antes de consolidar, o requison lista o que está assumindo:
+
+```
+ASSUMPTIONS:
+1. É uma aplicação web (não mobile nativo)
+2. Autenticação por sessão com cookie (não JWT)
+3. Banco PostgreSQL (pelos models ActiveRecord existentes)
+4. Só navegadores modernos
+→ Corrija agora ou sigo com estas.
+```
+
+Lacuna ambígua nunca é preenchida em silêncio. O propósito da spec é expor mal-entendidos *antes* do código, e suposição é a forma mais perigosa de mal-entendido.
+
+**A saída do requison cobre estas seis áreas** (o orquestrador só completa o que depende de inspecionar o repo):
+
+1. **Objective:** o que estamos construindo e por quê, para quem, o que é sucesso.
+2. **Commands:** comandos completos com flags, e não só nomes de ferramenta.
    ```
-   Build: npm run build
-   Test: npm test -- --coverage
-   Lint: npm run lint --fix
-   Dev: npm run dev
+   Test: bundle exec rspec
+   Lint: bundle exec rubocop
+   Front: pnpm vitest run
+   Dev: bin/dev
    ```
-
-3. **Project Structure** — Where source code lives, where tests go, where docs belong.
+3. **Project Structure:** onde vive o código, os testes, a documentação.
    ```
-   src/           → Application source code
-   src/components → React or Vue components
-   src/lib        → Shared utilities
-   tests/         → Unit and integration tests
-   e2e/           → End-to-end tests
-   docs/          → Documentation
+   app/services    → serviços de domínio
+   app/components  → componentes Vue
+   spec/           → RSpec
+   src/__tests__/  → Vitest
    ```
+4. **Code Style:** um trecho real de código do projeto vale mais que três parágrafos. Convenções de nome, formatação, exemplo de saída boa.
+5. **Testing Strategy:** framework, onde ficam os testes, expectativa de cobertura, que nível de teste para qual preocupação.
+6. **Boundaries:** três níveis:
+   - **Sempre:** rodar testes antes de commit, seguir convenções de nome, validar entrada
+   - **Perguntar antes:** mudança de schema, dependência nova, mudança de CI
+   - **Nunca:** commitar segredo, editar `vendor/`, remover teste falhando sem aprovação
 
-4. **Code Style** — One real code snippet showing your style beats three paragraphs describing it. Include naming conventions, formatting rules, and examples of good output.
-
-5. **Testing Strategy** — What framework, where tests live, coverage expectations, which test levels for which concerns.
-
-6. **Boundaries** — Three-tier system:
-   - **Always do:** Run tests before commits, follow naming conventions, validate inputs
-   - **Ask first:** Database schema changes, adding dependencies, changing CI config
-   - **Never do:** Commit secrets, edit vendor directories, remove failing tests without approval
-
-**Spec template:**
+**Template:**
 
 ```markdown
-# Spec: [Project/Feature Name]
+# Spec: [Projeto/Feature]
 
 ## Objective
-[What we're building and why. User stories or acceptance criteria.]
+[O que e por quê. Histórias de usuário ou critérios de aceite.]
 
-## Design reference (optional — when spec is driven by Figma)
-[Figma URL, fileKey, nodeId, retrieval date. Link back to frames/screens used.]
+## Design reference (quando houver Figma)
+[URL, fileKey, nodeId, data. Frames usados.]
 
 ## Tech Stack
-[Framework, language, key dependencies with versions]
+[Framework, linguagem, dependências-chave com versão]
 
 ## Commands
-[Build, test, lint, dev — full commands]
+[Build, test, lint, dev, completos]
 
 ## Project Structure
-[Directory layout with descriptions]
+[Pastas com descrição]
 
 ## Code Style
-[Example snippet + key conventions]
+[Trecho de exemplo + convenções]
 
 ## Testing Strategy
-[Framework, test locations, coverage requirements, test levels]
+[Framework, local dos testes, cobertura, níveis]
 
 ## Boundaries
-- Always: [...]
-- Ask first: [...]
-- Never: [...]
+- Sempre: [...]
+- Perguntar antes: [...]
+- Nunca: [...]
 
 ## Success Criteria
-[How we'll know this is done — specific, testable conditions]
+[Condições específicas e testáveis]
 
 ## Open Questions
-[Anything unresolved that needs human input]
+[O que ainda precisa de decisão humana]
 ```
 
-**Reframe instructions as success criteria.** When receiving vague requirements, translate them into concrete conditions:
+**Reformule instruções como critérios de sucesso.** Requisito vago vira condição concreta:
 
 ```
-REQUIREMENT: "Make the dashboard faster"
+REQUISITO: "Deixar o dashboard mais rápido"
 
-REFRAMED SUCCESS CRITERIA:
-- Dashboard LCP < 2.5s on 4G connection
-- Initial data load completes in < 500ms
-- No layout shift during load (CLS < 0.1)
-→ Are these the right targets?
+CRITÉRIOS REFORMULADOS:
+- LCP do dashboard < 2,5 s em conexão 4G
+- Carga inicial de dados em < 500 ms
+- Sem layout shift durante a carga (CLS < 0,1)
+→ São estes os alvos?
 ```
 
-This lets you loop, retry, and problem-solve toward a clear goal rather than guessing what "faster" means.
+### Fase 2: planejar
 
-### Phase 2: Plan
+Com a spec validada, gere o plano técnico:
 
-With the validated spec, generate a technical implementation plan:
+1. Componentes principais e dependências entre eles
+2. Ordem de implementação (o que vem primeiro)
+3. Riscos e mitigações
+4. O que pode ser paralelo e o que é sequencial
+5. Pontos de verificação entre fases
 
-1. Identify the major components and their dependencies
-2. Determine the implementation order (what must be built first)
-3. Note risks and mitigation strategies
-4. Identify what can be built in parallel vs. what must be sequential
-5. Define verification checkpoints between phases
+O plano é revisável: o humano lê e diz "é por aí" ou "muda X".
 
-The plan should be reviewable: the human should be able to read it and say "yes, that's the right approach" or "no, change X."
+### Fase 3: tarefas
 
-### Phase 3: Tasks
+Quebre o plano em tarefas discretas:
 
-Break the plan into discrete, implementable tasks:
+- Cada tarefa cabe em uma sessão focada
+- Cada tarefa tem critérios de aceite explícitos
+- Cada tarefa tem um passo de verificação (teste, build, checagem manual)
+- Ordem por dependência, e não por importância percebida
+- Nenhuma tarefa toca mais de ~5 arquivos
 
-- Each task should be completable in a single focused session
-- Each task has explicit acceptance criteria
-- Each task includes a verification step (test, build, manual check)
-- Tasks are ordered by dependency, not by perceived importance
-- No task should require changing more than ~5 files
-
-**Task template:**
 ```markdown
-- [ ] Task: [Description]
-  - Acceptance: [What must be true when done]
-  - Verify: [How to confirm — test command, build, manual check]
-  - Files: [Which files will be touched]
+- [ ] Tarefa: [descrição]
+  - Aceite: [o que precisa ser verdade ao terminar]
+  - Verificar: [como confirmar: comando de teste, build, checagem manual]
+  - Arquivos: [quais serão tocados]
 ```
 
-### Phase 4: Implement
+### Fase 4: implementar
 
-Execute tasks one at a time following `implementacao-incremental` and `desenvolvimento-orientado-a-testes` skills. Use `context-engineering` to load the right spec sections and source files at each step rather than flooding the agent with the entire spec.
+Execute uma tarefa por vez em TDD. Para tela a partir do Figma, use o `/tdd`. Carregue a seção da spec e os arquivos relevantes a cada passo, em vez de inundar o contexto com a spec inteira.
 
-## Keeping the Spec Alive
+## Spec viva
 
-The spec is a living document, not a one-time artifact:
+- **Decisão mudou:** atualize a spec primeiro, depois implemente.
+- **Escopo mudou:** feature adicionada ou cortada aparece na spec.
+- **Spec versionada:** mora no repositório junto com o código.
+- **PR referencia a spec:** link para a seção que cada PR implementa.
 
-- **Update when decisions change** — If you discover the data model needs to change, update the spec first, then implement.
-- **Update when scope changes** — Features added or cut should be reflected in the spec.
-- **Commit the spec** — The spec belongs in version control alongside the code.
-- **Reference the spec in PRs** — Link back to the spec section that each PR implements.
+## Racionalizações comuns
 
-## Common Rationalizations
-
-| Rationalization | Reality |
+| Racionalização | Realidade |
 |---|---|
-| "This is simple, I don't need a spec" | Simple tasks don't need *long* specs, but they still need acceptance criteria. A two-line spec is fine. |
-| "I'll write the spec after I code it" | That's documentation, not specification. The spec's value is in forcing clarity *before* code. |
-| "The spec will slow us down" | A 15-minute spec prevents hours of rework. Waterfall in 15 minutes beats debugging in 15 hours. |
-| "Requirements will change anyway" | That's why the spec is a living document. An outdated spec is still better than no spec. |
-| "The user knows what they want" | Even clear requests have implicit assumptions. The spec surfaces those assumptions. |
+| "É simples, dispenso spec" | Tarefa simples dispensa spec *longa*; critérios de aceite continuam necessários. Duas linhas bastam. |
+| "Escrevo a spec depois de codar" | Isso é documentação, e não especificação. O valor está em forçar clareza *antes*. |
+| "A spec vai atrasar" | 15 minutos de spec evitam horas de retrabalho. |
+| "Os requisitos vão mudar mesmo" | Por isso a spec é viva. Spec desatualizada ainda vale mais que nenhuma. |
+| "O usuário sabe o que quer" | Até pedido claro carrega suposições implícitas. A spec as expõe. |
 
-## Red Flags
+## Sinais de alerta
 
-- **Skipping `requison` in Phase 1** and writing the spec entirely in the main agent (viola esta skill)
-- Starting to write code without any written requirements
-- Asking "should I just start building?" before clarifying what "done" means
-- Implementing features not mentioned in any spec or task list
-- Making architectural decisions without documenting them
-- Skipping the spec because "it's obvious what to build"
+- Pular o `requison` na Fase 1 e escrever a spec inteira na sessão principal
+- Começar a codar sem requisito escrito
+- Perguntar "posso só começar a construir?" antes de definir o que é "pronto"
+- Implementar algo que nenhuma spec ou tarefa cita
+- Decidir arquitetura sem registrar
+- Pular a spec porque "é óbvio"
 
-## Verification
+## Verificação
 
-Before proceeding to implementation, confirm:
+Antes de implementar, confirme:
 
-- [ ] **Phase 1 was executed via `requison`** (delegação obrigatória; resultado fundido em `SPEC.md` ou equivalente)
-- [ ] The spec covers all six core areas
-- [ ] The human has reviewed and approved the spec
-- [ ] Success criteria are specific and testable
-- [ ] Boundaries (Always/Ask First/Never) are defined
-- [ ] The spec is saved to a file in the repository
-- [ ] If Figma was the source: design was pulled via MCP (`get_design_context` + `get_screenshot`), and **Design reference** (or equivalent) points to the correct `fileKey` / `nodeId`
+- [ ] Fase 1 executada pelo `requison` e consolidada em `SPEC.md`
+- [ ] A spec cobre as seis áreas
+- [ ] O humano revisou e aprovou
+- [ ] Critérios de sucesso específicos e testáveis
+- [ ] Boundaries (Sempre / Perguntar antes / Nunca) definidos
+- [ ] Spec salva em arquivo no repositório
+- [ ] Com Figma: design puxado via MCP (`get_design_context` + `get_screenshot`) e **Design reference** aponta para o `fileKey` / `nodeId` corretos
