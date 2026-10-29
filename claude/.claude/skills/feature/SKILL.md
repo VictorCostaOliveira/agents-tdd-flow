@@ -1,13 +1,13 @@
 ---
 name: feature
-description: 'Comando único do PRD à feature pronta, com a sessão como manager: faz o grill do PRD até a SPEC, monta o plano em TDD com o modelo e o effort escolhidos para cada fase, delega cada fase ao devoso nesse modelo, avalia o que voltou antes de liberar a próxima e escala o modelo quando a entrega é reprovada. Para na aprovação da SPEC e na do plano. Use quando o usuário chamar /feature, colar um PRD (com ou sem card e Figma) pedindo para levar até a feature pronta, ou pedir o fluxo completo PRD → SPEC → plano → TDD com roteamento de modelos. Para só escrever a SPEC, use criar-spec; para implementar uma SPEC já pronta sem roteamento, use implementa-spec.'
+description: 'Comando único do PRD à feature pronta, com a sessão como manager: faz o grill do PRD até a SPEC, monta o plano em TDD com o modelo e o effort escolhidos para cada fase, delega cada fase ao devoso nesse modelo, avalia o que voltou antes de liberar a próxima e escala o modelo quando a entrega é reprovada. Para na aprovação da SPEC e na do plano. Use quando o usuário chamar /feature, colar um PRD (com ou sem card e Figma) pedindo para levar até a feature pronta, ou pedir o fluxo completo PRD → SPEC → plano → TDD com roteamento de modelos. A SPEC sai no padrão da spec-arquitetura e o plano exatamente como o da implementa-spec. Para só escrever a SPEC, use spec-arquitetura; para implementar uma SPEC já pronta sem roteamento, use implementa-spec.'
 ---
 
 # feature — do PRD à feature pronta, com a sessão como manager
 
 A sessão principal é o manager: conversa com o usuário, decide o modelo de cada tarefa, delega e avalia. Os agentes executam: `devoso` implementa cada fase, `avaliason` e `security-auditor` auditam no fim. Rode numa sessão em **Opus**, porque o grill, o plano e a avaliação acontecem aqui.
 
-Esta skill orquestra o que já existe: o plano, a auditoria e o fechamento vêm de `implementa-spec` (`.claude/skills/implementa-spec/SKILL.md`). Leia as seções citadas de lá quando chegar nelas.
+Esta skill orquestra o que já existe: a SPEC vem de `spec-arquitetura` (`.claude/skills/spec-arquitetura/SKILL.md`), e o plano, a auditoria e o fechamento vêm de `implementa-spec` (`.claude/skills/implementa-spec/SKILL.md`). Leia as seções citadas de lá quando chegar nelas.
 
 ## 1. Entradas
 
@@ -26,12 +26,14 @@ Pergunte tudo o que falta numa mensagem só. Tudo desta feature mora em `<pasta 
 
 1. Leia o PRD por inteiro e o código que ele toca. Delegue a leitura do código a agentes `Explore` com `model: haiku`, como em `implementa-spec` §2.
 2. Grill: uma pergunta por vez, cada uma com a sua recomendação, até não restar decisão aberta. Fato que o repo responde, você levanta, sem perguntar.
-3. Escreva `SPEC-<id>.md` na pasta da feature: objetivo, escopo e fora de escopo, requisitos numerados (§), contratos de API, dados, telas e estados, critérios de aceite, decisões tomadas.
+3. Escreva a SPEC seguindo a skill `spec-arquitetura`: o "Como gerar" dela (contexto real do repo, `arquiteto` nos trade-offs, `N/A — <motivo>` no que não se aplica, premissas à vista) e o template com as 10 áreas. O que o grill decidiu vai para a área correspondente. Grave em `SPEC-<id>.md` na pasta da feature, em vez do `SPEC_ARQUITETURA.md` que a skill sugere.
 4. **Gate 1:** o usuário aprova a SPEC local. Publicar em outra ferramenta (wiki) só com o ok dele. Daqui em diante, o plano e os auditores leem a versão publicada; sem publicação, a fonte é o `SPEC-<id>.md` local, e os prompts apontam para esse caminho.
 
 ## 3. Plano com roteamento
 
-Monte o plano como em `implementa-spec` §3, em plan mode, e grave uma cópia em `PLANO-<id>.md` na pasta da feature. O plano ganha uma seção **Roteamento**, logo depois de "Cobertura da SPEC":
+Leia `implementa-spec` §3 e monte o plano exatamente como ela pede, em plan mode: as dez seções, na mesma ordem, e cada fase com a tabela `# | Cenário | Vermelho esperado | Verde`, um cenário por vez, back primeiro. Toda área e todo requisito da SPEC têm linha em "Cobertura da SPEC". Grave uma cópia em `PLANO-<id>.md` na pasta da feature.
+
+A única seção que esta skill acrescenta é **Roteamento**, logo depois de "Cobertura da SPEC"; nenhuma seção da §3 sai nem muda:
 
 | Fase | Modelo | Effort | Motivo | Tentativas | Status |
 |---|---|---|---|---|---|
