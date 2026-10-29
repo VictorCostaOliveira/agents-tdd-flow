@@ -1,11 +1,13 @@
 ---
 name: feature
-description: 'Comando único do PRD à feature pronta, com a sessão como manager: faz o grill do PRD até a SPEC, monta o plano em TDD com o modelo e o effort escolhidos para cada fase, delega cada fase ao devoso nesse modelo, avalia o que voltou antes de liberar a próxima e escala o modelo quando a entrega é reprovada. Para na aprovação da SPEC e na do plano. Use quando o usuário chamar /feature ou pedir o fluxo completo PRD → SPEC → plano → TDD com roteamento de modelos.'
+description: 'Comando único do PRD à feature pronta, com a sessão como manager: faz o grill do PRD até a SPEC, monta o plano em TDD com o modelo e o effort escolhidos para cada fase, delega cada fase ao devoso nesse modelo, avalia o que voltou antes de liberar a próxima e escala o modelo quando a entrega é reprovada. Para na aprovação da SPEC e na do plano. Use quando o usuário chamar /feature, colar um PRD (com ou sem card e Figma) pedindo para levar até a feature pronta, ou pedir o fluxo completo PRD → SPEC → plano → TDD com roteamento de modelos. Para só escrever a SPEC, use criar-spec; para implementar uma SPEC já pronta sem roteamento, use implementa-spec.'
 ---
 
 # feature — do PRD à feature pronta, com a sessão como manager
 
 A sessão principal é o manager: conversa com o usuário, decide o modelo de cada tarefa, delega e avalia. Os agentes executam: `devoso` implementa cada fase, `avaliason` e `security-auditor` auditam no fim. Rode numa sessão em **Opus**, porque o grill, o plano e a avaliação acontecem aqui.
+
+Esta skill orquestra o que já existe: o plano, a auditoria e o fechamento vêm de `implementa-spec` (`.claude/skills/implementa-spec/SKILL.md`). Leia as seções citadas de lá quando chegar nelas.
 
 ## 1. Entradas
 
@@ -14,35 +16,28 @@ A sessão principal é o manager: conversa com o usuário, decide o modelo de ca
 | PRD (link ou arquivo) | pergunte; é a fonte do grill |
 | Identificador da feature (card, issue) | pergunte; dá nome à pasta, à SPEC e à branch |
 | Figma (links com `node-id`) | pergunte quando o PRD tem tela |
+| SPEC mãe, se a feature for filha | use a que o PRD ou o card citam |
 
 Pergunte tudo o que falta numa mensagem só. Tudo desta feature mora em `<pasta de specs>/<id>-<slug>/`.
 
-**Retomada:** se a pasta já tem `PLANO-<id>.md`, leia o plano e siga da primeira fase com status diferente de `aprovada`.
+**Retomada:** se a pasta já tem `PLANO-<id>.md`, leia o plano e siga da primeira fase com status diferente de `aprovada`. Se só tem a SPEC, siga do passo que falta.
 
 ## 2. SPEC com grill
 
-1. Leia o PRD por inteiro e o código que ele toca. Delegue a leitura do código a agentes `Explore` com `model: haiku`, um por área, pedindo resposta em `caminho:linha`.
+1. Leia o PRD por inteiro e o código que ele toca. Delegue a leitura do código a agentes `Explore` com `model: haiku`, como em `implementa-spec` §2.
 2. Grill: uma pergunta por vez, cada uma com a sua recomendação, até não restar decisão aberta. Fato que o repo responde, você levanta, sem perguntar.
 3. Escreva `SPEC-<id>.md` na pasta da feature: objetivo, escopo e fora de escopo, requisitos numerados (§), contratos de API, dados, telas e estados, critérios de aceite, decisões tomadas.
-4. **Gate 1:** o usuário aprova a SPEC. Publicar em outra ferramenta (wiki, Confluence) só com o ok dele.
+4. **Gate 1:** o usuário aprova a SPEC local. Publicar em outra ferramenta (wiki) só com o ok dele. Daqui em diante, o plano e os auditores leem a versão publicada; sem publicação, a fonte é o `SPEC-<id>.md` local, e os prompts apontam para esse caminho.
 
 ## 3. Plano com roteamento
 
-Escreva `PLANO-<id>.md` na pasta da feature, em plan mode quando houver:
+Monte o plano como em `implementa-spec` §3, em plan mode, e grave uma cópia em `PLANO-<id>.md` na pasta da feature. O plano ganha uma seção **Roteamento**, logo depois de "Cobertura da SPEC":
 
-1. **Cobertura da SPEC:** tabela `§ da SPEC → fase e cenário`. Todo requisito tem uma linha.
-2. **Decisões por padrão:** onde a SPEC deixa aberto, a escolha que vale sem outra instrução.
-3. **Ambiente e regras:** branch, comando de teste do repo, moldes de teste e de código com caminho.
-4. **Roteamento:**
+| Fase | Modelo | Effort | Motivo | Tentativas | Status |
+|---|---|---|---|---|---|
+| 1. Endpoint X | sonnet | medium | segue o molde de `app/controllers/...` | 0 | pendente |
 
-   | Fase | Modelo | Effort | Motivo | Tentativas | Status |
-   |---|---|---|---|---|---|
-   | 1. Endpoint X | sonnet | medium | segue o molde de `app/controllers/...` | 0 | pendente |
-
-5. **Fases**, back primeiro, cada uma com a tabela `# | Cenário | Vermelho esperado | Verde`, em que o verde é o mínimo que resolve.
-6. **Verificação ponta a ponta** e **pendências**.
-
-**Gate 2:** o usuário aprova o plano e o roteamento juntos.
+O motivo é uma linha que aponte o critério da rubrica. **Gate 2:** o usuário aprova o plano e o roteamento juntos.
 
 ### Rubrica
 
@@ -51,8 +46,8 @@ Escolha pelo trabalho da fase, do nível mais barato que resolve:
 | Modelo | Effort | Quando |
 |---|---|---|
 | `haiku` | `low` | trabalho mecânico sem decisão: leitura e busca, docs, coleção de API, ajuste de lint |
-| `sonnet` | `medium` | fase de TDD que segue um molde que já existe no repo |
-| `opus` | `high` | fase sem molde no repo, ou que toca dinheiro, autorização ou isolamento de tenant, concorrência ou idempotência, integração externa, migração de dados, contrato entre repos |
+| `sonnet` | `medium` | fase de TDD que segue um molde que já existe no repo: endpoint no padrão, service, store, componente com story |
+| `opus` | `high` | fase sem molde no repo, ou que toca dinheiro, autorização ou isolamento de tenant, concorrência, lock ou idempotência, integração externa, migração de dados, contrato entre repos |
 | `fable` | `high` | só por escalada depois de reprovação em `opus`, ou a pedido do usuário |
 
 Na dúvida entre dois níveis, fique com o de cima.
@@ -65,30 +60,39 @@ Uma fase que lê histórico (tabela de versões, log de eventos, estado anterior
 
 ## 4. Execução por fase
 
-Antes da fase 1, prepare o ambiente você mesmo: a branch e o que o plano pede em "Ambiente e regras". Rode as fases uma de cada vez. Para cada fase:
+Antes da fase 1, prepare o ambiente você mesmo, como o plano diz em "Ambiente e regras": a branch ou o worktree. Os executores não criam branch; recebem o caminho absoluto do checkout ou do worktree.
 
-1. Delegue ao `devoso` com o `model` e o `effort` do roteamento. O prompt leva: o caminho do plano e a seção da fase, a SPEC, os moldes, as restrições (sem commit, sem migration, testes da base intocados, só os specs da fase) e, na retentativa, o motivo da reprovação.
+Rode as fases uma de cada vez, porque um só agente edita o working tree por vez. Para cada fase:
+
+1. Delegue ao agente `devoso` com o `model` e o `effort` da tabela de roteamento, usando o prompt "Executor de fase" de `implementa-spec/references/prompts-agentes.md`.
 2. Avalie a entrega você mesmo, sem confiar no relatório:
-   - rode os specs da fase;
-   - leia os arquivos que a fase tocou contra a tabela de cenários e as linhas de cobertura;
-   - confira que o vermelho relatado em cada cenário é o "vermelho esperado";
+   - rode os specs da fase e leia o resultado;
+   - leia os arquivos que a fase tocou (os do relatório e o que é novo em `git -C <repo> status --short` desde o retrato da fase anterior) contra a tabela de cenários e as linhas de "Cobertura da SPEC" que ela cobre;
+   - confira que o vermelho colado em cada cenário é o "vermelho esperado" do plano;
    - fase que lê histórico: confira que o cenário com dado real existe e passa pelo fluxo do model;
-   - confira que nenhum teste da base foi alterado: `git diff <base> --diff-filter=MD --name-only -- <pasta de testes>` volta vazio.
-3. Atualize o plano: tentativas, status (`aprovada` ou `reprovada: <motivo>`), desvios e respostas do usuário.
+   - confira que nenhum teste da base foi alterado: `git -C <repo> diff <base> --diff-filter=MD --name-only -- <pasta de testes>` tem de voltar vazio;
+   - confira as restrições do prompt: git, banco, escopo.
+3. Atualize o `PLANO-<id>.md`: tentativas e status da fase (`aprovada` ou `reprovada: <motivo>`), o retrato do `git status --short` e, na fase aprovada, os desvios do plano e as respostas do usuário, que vão para os auditores em §5.
 
-Reprovação:
+Quando a fase é reprovada:
 
-- **1ª:** delegue de novo no mesmo modelo, com o feedback concreto.
-- **2ª:** suba um nível (`haiku` → `sonnet` → `opus` → `fable`).
-- **3ª:** pare e leve ao usuário, com a sua recomendação. Se `fable` não estiver disponível, o teto é `opus`.
+- **1ª reprovação:** delegue de novo no mesmo modelo, com o feedback concreto (o que falhou, `arquivo:linha`, o que a SPEC pede).
+- **2ª reprovação:** suba um nível de modelo (`haiku` → `sonnet` → `opus` → `fable`) e delegue com o histórico das duas tentativas.
+- **3ª reprovação:** pare e leve ao usuário o que travou, com a sua recomendação.
 
-## 5. Auditoria e fechamento
+Se a delegação em `fable` der erro de acesso, o teto é `opus`: leve ao usuário.
 
-1. A auditoria acompanha o risco marcado no roteamento:
-   - **nenhuma fase de risco:** um `avaliason` em `opus` (`high`), SPEC × plano × código, corrigindo em TDD o que está claro, e o `security-auditor` em `sonnet` (`medium`), só leitura, em paralelo;
-   - **alguma fase de risco:** dois `avaliason` em `fable` (`high`), um de SPEC → código (corrige) e outro de código → SPEC (só reporta), e o `security-auditor` em `opus` (`high`).
+Decisão que é do usuário, surgida no meio de uma fase, vai sozinha e com recomendação, como em `implementa-spec` §4.
 
-   Nos dois casos, o prompt do auditor pede um cenário com dado real para cada leitura de histórico do diff.
-2. Confira os achados lendo o código, aplique os reais e rode os specs e o lint.
-3. Commit, PR e migration só com autorização explícita.
-4. Mensagem final: o que cada fase entregou, o que a auditoria corrigiu, as pendências e a tabela de roteamento como terminou (modelo, tentativas, escaladas), que serve para calibrar a rubrica.
+## 5. Auditoria, revisão e fechamento
+
+O tamanho da auditoria acompanha o risco marcado no roteamento:
+
+| Plano | Auditoria |
+|---|---|
+| Nenhuma fase de risco | um `avaliason` em `opus` (`high`), que confere SPEC → código e código → SPEC e corrige em TDD, e o `security-auditor` em `sonnet` (`medium`), só leitura, em paralelo |
+| Alguma fase de risco | `implementa-spec` §5 e §6 inteiros: dois `avaliason` em `fable` (`high`), mais os revisores de padrão e performance em `opus` e o `security-auditor` em `opus` (`high`) |
+
+Nos dois casos, o prompt do auditor pede um cenário com dado real para cada leitura de histórico que o diff faz, como em §3. Depois siga `implementa-spec` §7.
+
+A mensagem final traz, além do que `implementa-spec` §7 pede, a tabela de roteamento como terminou: modelo de cada fase, tentativas e escaladas. Ela serve para calibrar a rubrica.
