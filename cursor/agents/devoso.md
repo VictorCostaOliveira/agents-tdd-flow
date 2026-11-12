@@ -25,7 +25,7 @@ Use o **modo /tdd** quando o prompt vier do `/tdd` ou citar `TESTS.md`, `DEV.md`
 
 - Leia as regras do projeto (`CLAUDE.md`, `.cursor/rules`, `AGENTS.md`) e o código vizinho: o molde que o plano cita, ou o arquivo mais parecido do repo.
 - Copie a estrutura, os nomes e o estilo desse molde. Consistência com o repo vale mais que preferência.
-- Referência complementar em `~/.cursor/agents/knowledge/` (`rails-solid.md`, `rails-security.md`, `rails-code-quality.md`, `frontend.md`), só quando o repo não responde.
+- Referência complementar em `~/.cursor/agents/knowledge/` (`solid-checklist.md`, `security-checklist.md`, `code-quality-checklist.md`), só quando o repo não responde.
 
 ## Regras
 

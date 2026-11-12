@@ -14,7 +14,7 @@ Você é o **refoso**: refatora com a suíte verde, sem mudar comportamento obse
 
 ## O que procurar
 
-- **Regras e padrões:** arquivo, pasta, nome ou import fora do que as regras do projeto (`CLAUDE.md`, `.cursor/rules`, `AGENTS.md`) e o código vizinho definem.
+- **Regras e padrões:** arquivo, pasta, nome ou import fora do que as regras do projeto (`CLAUDE.md`, `.claude/rules`, `AGENTS.md`) e o código vizinho definem.
 - **Complexidade:** método longo ou com muitos ramos, níveis de abstração misturados. Extraia com nomes claros.
 - **Defesas redundantes:** checagem que repete o que o contrato, o tipo ou a camada de cima já garantem. Valide num ponto só, na borda.
 - **Código morto:** método, ramo, variável ou comentário obsoleto sem uso.

@@ -1,118 +1,118 @@
-# Security and Reliability Checklist
+# Checklist de segurança e confiabilidade
 
-## Input/Output Safety
+## Entrada e saída
 
-- **XSS**: Unsafe HTML injection, `dangerouslySetInnerHTML`, unescaped templates, innerHTML assignments
-- **Injection**: SQL/NoSQL/command/GraphQL injection via string concatenation or template literals
-- **SSRF**: User-controlled URLs reaching internal services without allowlist validation
-- **Path traversal**: User input in file paths without sanitization (`../` attacks)
-- **Prototype pollution**: Unsafe object merging in JavaScript (`Object.assign`, spread with user input)
+- **XSS:** HTML injetado sem escape, `v-html` com dado do usuário, templates sem escape, `innerHTML`
+- **Injeção:** SQL, NoSQL, comando de SO ou GraphQL montados por concatenação ou interpolação
+- **SSRF:** URL controlada pelo usuário alcançando serviço interno sem lista permitida
+- **Path traversal:** entrada do usuário em caminho de arquivo sem sanitização (`../`)
+- **Prototype pollution:** merge de objeto inseguro em JavaScript (`Object.assign`, spread com dado do usuário)
 
-## AuthN/AuthZ
+## Autenticação e autorização
 
-- Missing tenant or ownership checks for read/write operations
-- New endpoints without auth guards or RBAC enforcement
-- Trusting client-provided roles/flags/IDs
-- Broken access control (IDOR - Insecure Direct Object Reference)
-- Session fixation or weak session management
+- Falta de checagem de tenant ou de dono em leitura e escrita
+- Endpoint novo sem guarda de auth ou sem RBAC
+- Confiança em papel, flag ou id vindo do cliente
+- Controle de acesso quebrado (IDOR)
+- Fixação de sessão ou gestão fraca de sessão
 
-## JWT & Token Security
+## JWT e tokens
 
-- Algorithm confusion attacks (accepting `none` or `HS256` when expecting `RS256`)
-- Weak or hardcoded secrets
-- Missing expiration (`exp`) or not validating it
-- Sensitive data in JWT payload (tokens are base64, not encrypted)
-- Not validating `iss` (issuer) or `aud` (audience)
+- Confusão de algoritmo (aceitar `none` ou `HS256` quando se espera `RS256`)
+- Segredo fraco ou fixo no código
+- `exp` ausente ou sem validação
+- Dado sensível no payload (JWT é base64, e não cifrado)
+- `iss` ou `aud` sem validação
 
-## Secrets and PII
+## Segredos e PII
 
-- API keys, tokens, or credentials in code/config/logs
-- Secrets in git history or environment variables exposed to client
-- Excessive logging of PII or sensitive payloads
-- Missing data masking in error messages
+- Chave, token ou credencial em código, config ou log
+- Segredo no histórico do git ou em variável exposta ao cliente
+- Log excessivo de PII ou de payload sensível
+- Mensagem de erro sem mascaramento de dado
 
-## Supply Chain & Dependencies
+## Cadeia de suprimentos
 
-- Unpinned dependencies allowing malicious updates
-- Dependency confusion (private package name collision)
-- Importing from untrusted sources or CDNs without integrity checks
-- Outdated dependencies with known CVEs
+- Dependência sem pin, permitindo atualização maliciosa
+- Dependency confusion (colisão de nome de pacote privado)
+- Import de fonte ou CDN sem checagem de integridade
+- Dependência desatualizada com CVE conhecido
 
-## CORS & Headers
+## CORS e headers
 
-- Overly permissive CORS (`Access-Control-Allow-Origin: *` with credentials)
-- Missing security headers (CSP, X-Frame-Options, X-Content-Type-Options)
-- Exposed internal headers or stack traces
+- CORS permissivo demais (`Access-Control-Allow-Origin: *` com credenciais)
+- Header de segurança ausente (CSP, X-Frame-Options, X-Content-Type-Options)
+- Header interno ou stack trace exposto
 
-## Runtime Risks
+## Riscos em runtime
 
-- Unbounded loops, recursive calls, or large in-memory buffers
-- Missing timeouts, retries, or rate limiting on external calls
-- Blocking operations on request path (sync I/O in async context)
-- Resource exhaustion (file handles, connections, memory)
-- ReDoS (Regular Expression Denial of Service)
+- Loop sem limite, recursão ou buffer grande em memória
+- Chamada externa sem timeout, retry ou rate limit
+- Operação bloqueante no caminho da request (IO síncrono em contexto assíncrono)
+- Esgotamento de recurso (handles de arquivo, conexões, memória)
+- ReDoS (expressão regular com backtracking catastrófico)
 
-## Cryptography
+## Criptografia
 
-- Weak algorithms (MD5, SHA1 for security purposes)
-- Hardcoded IVs or salts
-- Using encryption without authentication (ECB mode, no HMAC)
-- Insufficient key length
+- Algoritmo fraco (MD5, SHA1 para fins de segurança)
+- IV ou salt fixo
+- Cifra sem autenticação (modo ECB, sem HMAC)
+- Chave curta
 
-## Race Conditions
+## Race conditions
 
-Race conditions are subtle bugs that cause intermittent failures and security vulnerabilities. Pay special attention to:
+Race conditions causam falhas intermitentes e brechas de segurança. Atenção especial a:
 
-### Shared State Access
-- Multiple threads/goroutines/async tasks accessing shared variables without synchronization
-- Global state or singletons modified concurrently
-- Lazy initialization without proper locking (double-checked locking issues)
-- Non-thread-safe collections used in concurrent context
+### Estado compartilhado
+- Threads, goroutines ou tasks assíncronas acessando variável compartilhada sem sincronização
+- Estado global ou singleton modificado concorrentemente
+- Inicialização preguiçosa sem lock
+- Coleção sem thread-safety em contexto concorrente
 
-### Check-Then-Act (TOCTOU)
-- `if (exists) then use` patterns without atomic operations
-- `if (authorized) then perform` where authorization can change
-- File existence check followed by file operation
-- Balance check followed by deduction (financial operations)
-- Inventory check followed by order placement
+### Check-then-act (TOCTOU)
+- `if existe then usa` sem operação atômica
+- `if autorizado then executa` quando a autorização pode mudar no meio
+- Checagem de existência de arquivo seguida de operação no arquivo
+- Checagem de saldo seguida de débito (operações financeiras)
+- Checagem de estoque seguida de pedido
 
-### Database Concurrency
-- Missing optimistic locking (`version` column, `updated_at` checks)
-- Missing pessimistic locking (`SELECT FOR UPDATE`)
-- Read-modify-write without transaction isolation
-- Counter increments without atomic operations (`UPDATE SET count = count + 1`)
-- Unique constraint violations in concurrent inserts
+### Concorrência no banco
+- Lock otimista ausente (coluna `version`, `updated_at`)
+- Lock pessimista ausente (`SELECT FOR UPDATE`)
+- Read-modify-write sem isolamento de transação
+- Incremento de contador sem operação atômica (`UPDATE SET count = count + 1`)
+- Violação de unique em inserts concorrentes
 
-### Distributed Systems
-- Missing distributed locks for shared resources
-- Leader election race conditions
-- Cache invalidation races (stale reads after writes)
-- Event ordering dependencies without proper sequencing
-- Split-brain scenarios in cluster operations
+### Sistemas distribuídos
+- Lock distribuído ausente para recurso compartilhado
+- Race na eleição de líder
+- Race na invalidação de cache (leitura velha depois da escrita)
+- Dependência de ordem de eventos sem sequenciamento
+- Split-brain em operações de cluster
 
-### Common Patterns to Flag
+### Padrões a sinalizar
 ```
-# Dangerous patterns:
+# Padrões perigosos:
 if not exists(key):       # TOCTOU
     create(key)
 
-value = get(key)          # Read-modify-write
+value = get(key)          # read-modify-write
 value += 1
 set(key, value)
 
-if user.balance >= amount:  # Check-then-act
+if user.balance >= amount:  # check-then-act
     user.balance -= amount
 ```
 
-### Questions to Ask
-- "What happens if two requests hit this code simultaneously?"
-- "Is this operation atomic or can it be interrupted?"
-- "What shared state does this code access?"
-- "How does this behave under high concurrency?"
+### Perguntas a fazer
+- "O que acontece se duas requests chegarem aqui ao mesmo tempo?"
+- "Esta operação é atômica ou pode ser interrompida?"
+- "Que estado compartilhado este código acessa?"
+- "Como isto se comporta sob alta concorrência?"
 
-## Data Integrity
+## Integridade de dados
 
-- Missing transactions, partial writes, or inconsistent state updates
-- Weak validation before persistence (type coercion issues)
-- Missing idempotency for retryable operations
-- Lost updates due to concurrent modifications
+- Transação ausente, escrita parcial ou estado inconsistente
+- Validação fraca antes de persistir (coerção de tipo)
+- Idempotência ausente em operação com retry
+- Atualização perdida por modificação concorrente

@@ -1,7 +1,1 @@
-# Rastrear apenas o bundle versionado (raiz + cursor/ + claude/)
-*
-!README.md
-!cursor/
-!cursor/**
-!claude/
-!claude/**
+.DS_Store

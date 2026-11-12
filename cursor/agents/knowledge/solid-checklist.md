@@ -1,65 +1,65 @@
-# SOLID Smell Prompts
+# Checklist SOLID e cheiros de código
 
-## SRP (Single Responsibility)
+## SRP (responsabilidade única)
 
-- File owns unrelated concerns (e.g., HTTP + DB + domain rules in one file)
-- Large class/module with low cohesion or multiple reasons to change
-- Functions that orchestrate many unrelated steps
-- God objects that know too much about the system
-- **Ask**: "What is the single reason this module would change?"
+- Arquivo com preocupações sem relação (HTTP + banco + regra de domínio no mesmo lugar)
+- Classe ou módulo grande com baixa coesão ou vários motivos para mudar
+- Função que orquestra muitos passos sem relação
+- Objeto-deus que sabe demais sobre o sistema
+- **Pergunte:** "Qual é o único motivo para este módulo mudar?"
 
-## OCP (Open/Closed)
+## OCP (aberto/fechado)
 
-- Adding a new behavior requires editing many switch/if blocks
-- Feature growth requires modifying core logic rather than extending
-- No plugin/strategy/hook points for variation
-- **Ask**: "Can I add a new variant without touching existing code?"
+- Comportamento novo exige editar vários `switch`/`if`
+- Crescimento de feature exige mexer na lógica central em vez de estender
+- Sem ponto de variação (strategy, hook, plugin)
+- **Pergunte:** "Consigo adicionar uma variante sem tocar no código existente?"
 
-## LSP (Liskov Substitution)
+## LSP (substituição de Liskov)
 
-- Subclass checks for concrete type or throws for base method
-- Overridden methods weaken preconditions or strengthen postconditions
-- Subclass ignores or no-ops parent behavior
-- **Ask**: "Can I substitute any subclass without the caller knowing?"
+- Subclasse checa tipo concreto ou lança exceção em método da base
+- Método sobrescrito enfraquece pré-condições ou endurece pós-condições
+- Subclasse ignora ou anula comportamento do pai
+- **Pergunte:** "Consigo substituir qualquer subclasse sem o chamador perceber?"
 
-## ISP (Interface Segregation)
+## ISP (segregação de interface)
 
-- Interfaces with many methods, most unused by implementers
-- Callers depend on broad interfaces for narrow needs
-- Empty/stub implementations of interface methods
-- **Ask**: "Do all implementers use all methods?"
+- Interface com muitos métodos, a maioria sem uso pelos implementadores
+- Chamador depende de interface larga para uma necessidade estreita
+- Implementações vazias ou stub de métodos da interface
+- **Pergunte:** "Todos os implementadores usam todos os métodos?"
 
-## DIP (Dependency Inversion)
+## DIP (inversão de dependência)
 
-- High-level logic depends on concrete IO, storage, or network types
-- Hard-coded implementations instead of abstractions or injection
-- Import chains that couple business logic to infrastructure
-- **Ask**: "Can I swap the implementation without changing business logic?"
-
----
-
-## Common Code Smells (Beyond SOLID)
-
-| Smell | Signs |
-|-------|-------|
-| **Long method** | Function > 30 lines, multiple levels of nesting |
-| **Feature envy** | Method uses more data from another class than its own |
-| **Data clumps** | Same group of parameters passed together repeatedly |
-| **Primitive obsession** | Using strings/numbers instead of domain types |
-| **Shotgun surgery** | One change requires edits across many files |
-| **Divergent change** | One file changes for many unrelated reasons |
-| **Dead code** | Unreachable or never-called code |
-| **Speculative generality** | Abstractions for hypothetical future needs |
-| **Magic numbers/strings** | Hardcoded values without named constants |
+- Lógica de alto nível depende de IO, storage ou rede concretos
+- Implementação fixa no código em vez de abstração ou injeção
+- Cadeia de imports acoplando regra de negócio a infraestrutura
+- **Pergunte:** "Consigo trocar a implementação sem mudar a regra de negócio?"
 
 ---
 
-## Refactor Heuristics
+## Cheiros comuns (além de SOLID)
 
-1. **Split by responsibility, not by size** - A small file can still violate SRP
-2. **Introduce abstraction only when needed** - Wait for the second use case
-3. **Keep refactors incremental** - Isolate behavior before moving
-4. **Preserve behavior first** - Add tests before restructuring
-5. **Name things by intent** - If naming is hard, the abstraction might be wrong
-6. **Prefer composition over inheritance** - Inheritance creates tight coupling
-7. **Make illegal states unrepresentable** - Use types to enforce invariants
+| Cheiro | Sinais |
+|--------|--------|
+| **Método longo** | Mais de 30 linhas, vários níveis de aninhamento |
+| **Inveja de feature** | Método usa mais dados de outra classe que da própria |
+| **Grupo de dados** | Mesmo conjunto de parâmetros passado junto repetidamente |
+| **Obsessão por primitivos** | String e número no lugar de tipos de domínio |
+| **Cirurgia com espingarda** | Uma mudança exige editar muitos arquivos |
+| **Mudança divergente** | Um arquivo muda por muitos motivos sem relação |
+| **Código morto** | Código inalcançável ou nunca chamado |
+| **Generalidade especulativa** | Abstração para necessidade futura hipotética |
+| **Números e strings mágicos** | Valor fixo sem constante nomeada |
+
+---
+
+## Heurísticas de refatoração
+
+1. **Separe por responsabilidade, e não por tamanho.** Arquivo pequeno também viola SRP.
+2. **Abstraia só quando precisar.** Espere o segundo caso de uso.
+3. **Refatore em passos pequenos.** Isole o comportamento antes de mover.
+4. **Preserve o comportamento primeiro.** Testes antes de reestruturar.
+5. **Nomeie pela intenção.** Nome difícil costuma indicar abstração errada.
+6. **Prefira composição a herança.** Herança acopla forte.
+7. **Torne estados inválidos irrepresentáveis.** Use tipos para impor invariantes.

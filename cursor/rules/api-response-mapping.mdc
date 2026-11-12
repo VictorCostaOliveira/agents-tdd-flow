@@ -1,5 +1,5 @@
 ---
-description: Mapear respostas de API conforme o contrato documentado; evitar normalização defensiva e fallbacks fantasma.
+description: API — mapeamento de respostas (frontend)
 alwaysApply: true
 ---
 
