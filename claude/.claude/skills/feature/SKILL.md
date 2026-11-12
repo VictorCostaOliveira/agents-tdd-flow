@@ -1,6 +1,6 @@
 ---
 name: feature
-description: 'Comando único do PRD à feature pronta, com a sessão como manager: faz o grill do PRD até a SPEC, monta o plano em TDD com o modelo e o effort escolhidos para cada fase, delega cada fase ao devoso nesse modelo, avalia o que voltou antes de liberar a próxima e escala o modelo quando a entrega é reprovada. Para na aprovação da SPEC e na do plano. Use quando o usuário chamar /feature, colar um PRD (com ou sem card e Figma) pedindo para levar até a feature pronta, ou pedir o fluxo completo PRD → SPEC → plano → TDD com roteamento de modelos. A SPEC sai no padrão da spec-arquitetura e o plano exatamente como o da implementa-spec. Para só escrever a SPEC, use spec-arquitetura; para implementar uma SPEC já pronta sem roteamento, use implementa-spec.'
+description: 'Comando único do PRD à feature pronta, com a sessão como manager: faz o grill do PRD até a SPEC, monta o plano em TDD com o modelo e o effort escolhidos para cada fase, delega cada fase ao devoso nesse modelo, avalia o que voltou antes de liberar a próxima e escala o modelo quando a entrega é reprovada. Para na aprovação da SPEC e na do plano; no modo autônomo (o usuário dispensa as aprovações), responde o grill pelos critérios de aceite da issue, do PRD e das issues passadas e troca os gates por uma matriz critério → SPEC → cenário, em worktree, até o fim. Use quando o usuário chamar /feature, colar um link de issue ou um PRD (com ou sem Figma) pedindo para levar até a feature pronta, ou pedir o fluxo completo PRD → SPEC → plano → TDD com roteamento de modelos. A SPEC sai no padrão da spec-arquitetura e o plano exatamente como o da implementa-spec. Para só escrever a SPEC, use spec-arquitetura; para implementar uma SPEC já pronta sem roteamento, use implementa-spec.'
 ---
 
 # feature — do PRD à feature pronta, com a sessão como manager
@@ -13,12 +13,12 @@ Esta skill orquestra o que já existe: a SPEC vem de `spec-arquitetura` (`.claud
 
 | Entrada | Se faltar |
 |---|---|
-| PRD (link ou arquivo) | pergunte; é a fonte do grill |
-| Identificador da feature (card, issue) | pergunte; dá nome à pasta, à SPEC e à branch |
-| Figma (links com `node-id`) | pergunte quando o PRD tem tela |
+| Identificador da feature (card, issue ou link) | pergunte; dá nome à pasta, à SPEC e à branch |
+| PRD (link ou arquivo) | tire da issue; se não houver, pergunte; é a fonte do grill |
+| Figma (links com `node-id`) | tire da issue ou do PRD; pergunte quando a feature tem tela e nenhum dos dois traz |
 | SPEC mãe, se a feature for filha | use a que o PRD ou o card citam |
 
-Pergunte tudo o que falta numa mensagem só. Tudo desta feature mora em `<pasta de specs>/<id>-<slug>/`.
+Com link de issue, leia a issue no tracker (descrição, critérios de aceite, épico, issues e links ligados) antes de perguntar qualquer coisa. Pergunte tudo o que falta numa mensagem só. Tudo desta feature mora em `<pasta de specs>/<id>-<slug>/`.
 
 **Retomada:** se a pasta já tem `PLANO-<id>.md`, leia o plano e siga da primeira fase com status diferente de `aprovada`. Se só tem a SPEC, siga do passo que falta.
 
@@ -33,7 +33,7 @@ Pergunte tudo o que falta numa mensagem só. Tudo desta feature mora em `<pasta 
 
 Leia `implementa-spec` §3 e monte o plano exatamente como ela pede, em plan mode: as dez seções, na mesma ordem, e cada fase com a tabela `# | Cenário | Vermelho esperado | Verde`, um cenário por vez, back primeiro. Toda área e todo requisito da SPEC têm linha em "Cobertura da SPEC". Grave uma cópia em `PLANO-<id>.md` na pasta da feature.
 
-A única seção que esta skill acrescenta é **Roteamento**, logo depois de "Cobertura da SPEC"; nenhuma seção da §3 sai nem muda:
+Esta skill acrescenta **Roteamento**, logo depois de "Cobertura da SPEC", e, no modo autônomo (§6), a **Matriz de critérios** logo depois dele; nenhuma seção da §3 sai nem muda:
 
 | Fase | Modelo | Effort | Motivo | Tentativas | Status |
 |---|---|---|---|---|---|
@@ -98,3 +98,27 @@ O tamanho da auditoria acompanha o risco marcado no roteamento:
 Nos dois casos, o prompt do auditor pede um cenário com dado real para cada leitura de histórico que o diff faz, como em §3. Depois siga `implementa-spec` §7.
 
 A mensagem final traz, além do que `implementa-spec` §7 pede, a tabela de roteamento como terminou: modelo de cada fase, tentativas e escaladas. Ela serve para calibrar a rubrica.
+
+## 6. Modo autônomo — guiado pelos critérios de aceite
+
+Vale quando o usuário dispensa as aprovações ("a SPEC e o plano não precisam de aprovação", "pode ir até o final sem pedir permissão"). Link de issue sozinho não liga este modo. Ligado, o fluxo de §2 a §5 continua igual, com estas trocas:
+
+**Fontes do grill, nesta ordem:** critérios de aceite da issue → critérios e regras do PRD (e respostas nos comentários) → issues passadas: irmãs no mesmo épico, issues ligadas e as SPECs já na pasta de specs.
+
+1. **Grill autorrespondido.** Uma pergunta por vez, com recomendação, mas quem responde é você, pelas fontes acima, citando de onde veio cada resposta (`CA-3 da issue`, `PRD §Regras`, `<id da issue passada>`). Registre perguntas e respostas na seção de decisões da SPEC.
+   - Pergunta que nenhuma fonte cobre: a sua recomendação vira **premissa** visível na SPEC, sem parar.
+   - Fontes em conflito: vale a issue; registre o conflito na SPEC.
+2. **Critérios numerados.** Liste os critérios de aceite da issue como `CA-1..n` no topo da SPEC, com o texto original. Critério do PRD que a issue não traz entra como `PRD-n`.
+3. **Plano sem plan mode.** Escreva o `PLANO-<id>.md` direto (plan mode prende na aprovação). Cada cenário da tabela começa pelo critério que prova: `CA-2: usuário sem permissão recebe 403`. Os cenários são escritos a partir do texto do critério, cobrindo o caminho feliz e as bordas que o critério nomeia.
+4. **Matriz de critérios** (no plano, depois do Roteamento):
+
+   | Critério | Área / requisito da SPEC | Cenário(s) do plano |
+   |---|---|---|
+   | CA-1 | APIs — `GET /...` | 2.1, 2.3 |
+
+   Ela substitui os gates 1 e 2. Passa quando todo `CA`/`PRD` tem ao menos um cenário, e todo requisito e cenário aponta para um critério, o PRD, uma issue passada ou uma premissa listada. Reprovou: corrija a SPEC ou o plano e confira de novo. Passou: marque no plano `Gate 1 e 2: aprovados por critério` e siga.
+5. **Sem publicação.** A SPEC fica local; publicar vira pendência na mensagem final.
+6. **Worktree sempre.** `git -C <repo> worktree add <pasta de worktrees>/<repo>-<slug> -b <branch>` em cada repo tocado. Os executores recebem esses caminhos; nada roda no checkout base.
+7. **Até o fim, em primeiro plano.** Executores em primeiro plano; avalie, siga para a próxima fase, depois auditoria, revisão e fechamento, sem encerrar a resposta entre fases.
+8. **Paradas que continuam valendo:** commit, push e PR; escrita no tracker ou na wiki; formato de migration e a execução dela. Se a SPEC tem migration, faça logo depois da matriz uma pergunta só, com recomendação (colunas, tipos, índices e o ok para migrar no ambiente local), e siga ao receber a resposta, porque migration pendente quebra todo spec. A parada na 3ª reprovação de uma fase (§4) também continua.
+9. **Fechamento.** Com nada commitado, o worktree fica sujo: mantenha e informe os caminhos. A mensagem final traz, além de §5: premissas tomadas, conflitos entre fontes, a matriz como terminou, os caminhos dos worktrees e as autorizações pendentes (commit/PR, publicação da SPEC, atualização da issue).
